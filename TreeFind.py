@@ -126,12 +126,26 @@ class TreeFind(dict):
             for _ in range(nl):
                 print()
 
-    def __init__(self, arg):
+    def __init__(self, arg=None):
         """
         Initialization checks for existing file to restore or
         ingests unix word dictionary, generates a tree, and creates this file.
         """
         self.__dict__ = self
+        if arg is None:  # docopt args were not offered.
+            # This mechanism guarantees presence of all docopt args.
+            arg = {}
+            with open(sys.argv[0]) as source:
+                while True:
+                    line = source.readline().strip()
+                    if line == '"""':
+                        break
+                    if line.startswith('    -'):
+                        m = re.search('--(\w+)')
+                        d = re.search('\[default: ([^\]]*)\s\]')
+                        arg[m.group(0)] = d.group(0) if d else False
+            arg['words'] = '/usr/share/dict/words'
+
         arg.haveJSON = os.path.isfile('TreeFind.json')
         self.arg = arg
 
