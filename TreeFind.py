@@ -126,7 +126,7 @@ class TreeFind(dict):
             for _ in range(nl):
                 print()
 
-    def __init__(self, arg=None):
+    def __init__(self, arg=None, wordlist=None):
         """
         Initialization checks for existing file to restore or
         ingests unix word dictionary, generates a tree, and creates this file.
@@ -149,7 +149,13 @@ class TreeFind(dict):
         arg.haveJSON = os.path.isfile('TreeFind.json')
         self.arg = arg
 
-        if arg.haveJSON and not arg.renewJSON and not arg.noJSON:
+        if wordlist:
+            for word in wordlist:
+                self.verbose("%s%s\r" % (word, ' ' * 50), 0)
+                if arg.ignorecase:
+                    word = word.lower()
+                self.ingest(word)
+        elif arg.haveJSON and not arg.renewJSON and not arg.noJSON:
             self.verbose('restoring from json backup')
             with open('TreeFind.json', 'rb') as source:
                 codecs.UTF8Reader = codecs.getreader('utf8')
