@@ -199,7 +199,7 @@ class TreeFind(dict):
         temp = self
         if self.arg.ignorecase:
             word = word.lower()
-        for i, c in enumerate(list(word)):
+        for c in list(word):
             temp = temp.get(c, None)
             if not temp:
                 break
