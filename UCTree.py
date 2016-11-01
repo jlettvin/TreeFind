@@ -15,7 +15,7 @@ class UCTree(object):
     A word or list of words may be added after instancing by functor.
     """
 
-    end = 0x110000  # Illegal Unicode, so usable as end key
+    end = 0xFFFF  # 0xFFFF is a non-character so it is usable as the end key.
 
     def __init__(self, wordlist=[]):
         self.tree = {}
