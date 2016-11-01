@@ -74,7 +74,7 @@ if __name__ == "__main__":
         print pf[result] % (words, msg)
 
     def toFail(uctree, words, msg):
-        result = ( [] == [uctree[w] for w in data[words]] )
+        result = (     [     ] == [uctree[w] for w in data[words]] )
         print pf[result] % (words, msg)
 
     def test():
