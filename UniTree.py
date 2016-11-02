@@ -34,24 +34,28 @@ class UniTree(set):
     TODO; when deleting word, delete its variations (remove from word lists).
     """
 
-    end = 0xFFFF  # 0xFFFF is a non-character so it is usable as the end key.
-
     def __init__(self, wordlist=[], **kw):
         self.kw = kw
+        self.case = kw.get('ignorecase', False)
+        self.end = kw.get('end', 0xFFFF)  # non-codepoint usable as end key.
         self.tree = {}
         self(wordlist)
 
     def word(self, root, also=None):
+        if type(also) == type([]):
+            for variation in also:
+                self.word(root, variation)
+            return self
         (size, fork) = (len(root), self.tree)
         if not also:
             also = root
-        for o in (ord(c) for c in also):
+        for o in (ord(c) for c in also):  # iteration costs less than recursion
             fork[o] = fork.get(o, {})
             fork = fork[o]
-        if not fork.get(UniTree.end):
-            fork[UniTree.end] = set([root])
+        if not fork.get(self.end):
+            fork[self.end] = set([root])
         else:
-            fork[UniTree.end].add(root)
+            fork[self.end].add(root)
         self.add(root)
         return self
 
@@ -81,9 +85,9 @@ class UniTree(set):
         if N <= level:
             self.discard(root)
             unique = (tree and (len(tree) == 1))
-            terminal = tree and UniTree.end in tree
+            terminal = tree and self.end in tree
             if terminal:
-                tree[UniTree.end].discard(root)
+                tree[self.end].discard(root)
             return unique and terminal
 
         C = root[level]
@@ -101,4 +105,4 @@ class UniTree(set):
             fork = fork.get(o, {})
             if fork == {}:
                 break
-        return fork.get(UniTree.end, False)
+        return fork.get(self.end, False)
