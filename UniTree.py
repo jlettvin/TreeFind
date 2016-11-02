@@ -7,22 +7,23 @@ __copyright__  = "\
 Copyright(C) 2016 Jonathan D. Lettvin, All Rights Reserved"
 __credits__    = [ "Jonathan D. Lettvin" ]
 __license__    = "GPLv3"
-__version__    = "0.0.2"
+__version__    = "0.0.3"
 __maintainer__ = "Jonathan D. Lettvin"
 __email__      = "jlettvin@gmail.com"
 __contact__    = "jlettvin@gmail.com"
 __status__     = "Demonstration"
-__date__       = "20161029"
+__date__       = "20161102"
 
 # CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 class UniTree(set):
     """
-    UniTree instances as uctree, a tree for fast specified word lookup.
+    UniTree instances as unitree, a tree for fast specified word lookup.
 
-    uctree(word)            functor adds word to the tree.
-    uctree[word]            getitem returns True if word is in the tree.
-    uctree.delete(word)     remove word from tree
-    uctree(word, "delete")  remove word from tree
+    unitree(word)               functor adds word to tree.
+    unitree[word]               getitem returns True if word is in tree.
+    unitree(word, "delete")     remove word from tree
+    unitree.delete(word)        remove word from tree
+    unitree.also(word, variant) add variant targeting word to tree
 
     A word or list of words may be given while instancing.
     A word or list of words may be added after instancing by functor.
@@ -34,10 +35,6 @@ class UniTree(set):
     """
 
     end = 0xFFFF  # 0xFFFF is a non-character so it is usable as the end key.
-
-    #@staticmethod
-    #def variations(word):
-        #return []
 
     def __init__(self, wordlist=[], **kw):
         self.tree = {}
@@ -67,7 +64,7 @@ class UniTree(set):
             else:
                 self.also(word)
                 self.add(word)
-                # TODO: variations mechanism doesn't work yet.
+                # TODO: internal variations mechanism doesn't work yet.
                 #for variant in UniTree.variations(word):
                     #self.also(word, variant)
         return self
@@ -103,74 +100,3 @@ class UniTree(set):
             if temp == {}:
                 break
         return temp.get(UniTree.end, False)
-
-# MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
-if __name__ == "__main__":
-    """
-    Running this file as a program executes the tests.
-    """
-
-    pf = [ '[PASS] %s: %s', '[FAIL] %s: %s']
-    data = {
-        'bwords': [ 'bye', 'bitterling', 'beneficially' ],
-        'hwords': [ 'hello', 'hi', 'hola', 'hold', 'hole', 'holy' ],
-        '_words': [ '愚', '公', '移', '山' ],
-        'qwords': [ 'quick' ]
-    }
-
-    def toPass(uctree, words, msg):
-        result = ( data[words] == [uctree[w] for w in data[words]] )
-        print pf[result] % (words, msg)
-
-    def toFail(uctree, words, msg):
-        result = (     [     ] == [uctree[w] for w in data[words]] )
-        print pf[result] % (words, msg)
-
-    def variations(word):
-        result = []
-        for i in range(1, len(word)-1):
-            result.append(word[0:i]+word[i+1:])
-        return result
-
-    def test1():
-        # Note, we take all but the bwords
-        uctree = UniTree(data['hwords'])(data['_words'])
-
-        toPass(uctree, 'hwords', '    in uctree ASCII characters after taking')
-        toPass(uctree, '_words', '    in uctree CJK   characters after taking')
-
-        toFail(uctree, 'bwords', 'not in uctree before taking')
-        uctree(data['bwords'])
-        toPass(uctree, 'bwords', '    in uctree after  taking')
-
-        for word in data['bwords']:
-            uctree(word, "delete")
-        toFail(uctree, 'bwords', 'not in uctree after  deleting')
-        for word in data['hwords']:
-            uctree.delete(word)
-        toFail(uctree, 'hwords', 'not in uctree after  deleting')
-
-        toPass(uctree, '_words', '    in uctree CJK   characters after bh del')
-
-        UniTree.variations = variations
-        variants = variations('quick')
-        uctree.also('quick')
-        for variant in variants:
-            uctree.also('quick', variant)
-        for variant in variants:
-            toPass(uctree, 'qwords', '(%s is a variant of %s)' % (
-                variant, list(uctree[variant])[0]
-            ))
-
-    def test2():
-        uctree = UniTree(['hello', 'world'])
-        uctree.delete('world')
-        print len(uctree)
-        print uctree['hello']
-        print uctree['world']
-
-    def test():
-        test1()
-        test2()
-
-    test()
