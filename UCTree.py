@@ -31,13 +31,13 @@ class UCTree(object):
         (size, temp) = (len(word), self.tree)
         if not variation:
             variation = word
-        for o in (ord(c) for c in word):
+        for o in (ord(c) for c in variation):
             temp[o] = temp.get(o, {})
             temp = temp[o]
         if not temp.get(UCTree.end):
-            temp[UCTree.end] = set([variation])
+            temp[UCTree.end] = set([word])
         else:
-            temp[UCTree.end].add(variation)
+            temp[UCTree.end].add(word)
         return self
 
     def __call__(self, word, *args):
