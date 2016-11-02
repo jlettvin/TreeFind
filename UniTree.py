@@ -37,21 +37,22 @@ class UniTree(set):
     end = 0xFFFF  # 0xFFFF is a non-character so it is usable as the end key.
 
     def __init__(self, wordlist=[], **kw):
+        self.kw = kw
         self.tree = {}
         self(wordlist)
 
-    def word(self, word, variation=None):
-        (size, temp) = (len(word), self.tree)
-        if not variation:
-            variation = word
-        for o in (ord(c) for c in variation):
-            temp[o] = temp.get(o, {})
-            temp = temp[o]
-        if not temp.get(UniTree.end):
-            temp[UniTree.end] = set([word])
+    def word(self, root, also=None):
+        (size, fork) = (len(root), self.tree)
+        if not also:
+            also = root
+        for o in (ord(c) for c in also):
+            fork[o] = fork.get(o, {})
+            fork = fork[o]
+        if not fork.get(UniTree.end):
+            fork[UniTree.end] = set([root])
         else:
-            temp[UniTree.end].add(word)
-        self.add(word)
+            fork[UniTree.end].add(root)
+        self.add(root)
         return self
 
     def __call__(self, word, *args):
@@ -69,34 +70,35 @@ class UniTree(set):
                     #self.word(word, variant)
         return self
 
-    def delete(self, word, tree=False, level=0, N=0):
+    def delete(self, root, tree=False, level=0, N=0):
         "Prune a word or list of words from the tree"
+        # TODO delete variations as well as root
         if tree is False:
             tree = self.tree
-            N = len(word)
+            N = len(root)
             level = 0
 
         if N <= level:
-            self.discard(word)
+            self.discard(root)
             unique = (tree and (len(tree) == 1))
             terminal = tree and UniTree.end in tree
             if terminal:
-                tree[UniTree.end].discard(word)
+                tree[UniTree.end].discard(root)
             return unique and terminal
 
-        C = word[level]
+        C = root[level]
         O = ord(C)
         if O in tree:
-            if self.delete(word, tree[O], level + 1, N) and len(tree) == 1:
+            if self.delete(root, tree[O], level + 1, N) and len(tree) == 1:
                 del tree[O]
                 return True
             return False
 
-    def __getitem__(self, word):
-        "Find a word in the tree"
-        temp = self.tree
-        for o in (ord(c) for c in word):
-            temp = temp.get(o, {})
-            if temp == {}:
+    def __getitem__(self, find):
+        "Find in the tree"
+        fork = self.tree
+        for o in (ord(c) for c in find):
+            fork = fork.get(o, {})
+            if fork == {}:
                 break
-        return temp.get(UniTree.end, False)
+        return fork.get(UniTree.end, False)
