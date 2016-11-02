@@ -71,7 +71,7 @@ class UCTree(object):
             temp = temp.get(o, {})
             if temp == {}:
                 break
-        return UCTree.end in temp
+        return temp.get(UCTree.end, False)
 
 # MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 if __name__ == "__main__":
@@ -83,7 +83,8 @@ if __name__ == "__main__":
     data = {
         'bwords': [ 'bye', 'bitterling', 'beneficially' ],
         'hwords': [ 'hello', 'hi', 'hola', 'hold', 'hole', 'holy' ],
-        '_words': [ '愚', '公', '移', '山' ]
+        '_words': [ '愚', '公', '移', '山' ],
+        'qwords': [ 'quick' ]
     }
 
     def toPass(uctree, words, msg):
@@ -104,12 +105,24 @@ if __name__ == "__main__":
         toFail(uctree, 'bwords', 'not in uctree before adding')
         uctree(data['bwords'])
         toPass(uctree, 'bwords', '    in uctree after  adding')
+
         for word in data['bwords']:
             uctree(word, "delete")
         toFail(uctree, 'bwords', 'not in uctree after  deleting')
         for word in data['hwords']:
             uctree.delete(word)
         toFail(uctree, 'hwords', 'not in uctree after  deleting')
+
         toPass(uctree, '_words', '    in uctree CJK   characters after bh del')
+
+        variants = ['quick', 'quik', 'quck', 'qick']
+        uctree.add('quick')
+        for variant in variants:
+            uctree.add('quick', variant)
+        for variant in variants:
+            toPass(uctree, 'qwords', '(%s is a variant of %s)' % (
+                variant, list(uctree[variant])[0]
+            ))
+
 
     test()
