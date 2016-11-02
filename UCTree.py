@@ -20,10 +20,11 @@ class UCTree(object):
 
     end = 0xFFFF  # 0xFFFF is a non-character so it is usable as the end key.
 
-    def variations(self, word):
-        return []
+    #@staticmethod
+    #def variations(word):
+        #return []
 
-    def __init__(self, wordlist=[]):
+    def __init__(self, wordlist=[], **kw):
         self.tree = {}
         self(wordlist)
 
@@ -49,8 +50,9 @@ class UCTree(object):
                 self.delete(word)
             else:
                 self.add(word)
-                for variation in self.variations(word):
-                    self.add(word, variation)
+                # TODO: variations mechanism dpesn't work yet.
+                #for variant in UCTree.variations(word):
+                    #self.add(word, variant)
         return self
 
     def delete(self, word, level=0, tree=None):
@@ -95,6 +97,12 @@ if __name__ == "__main__":
         result = (     [     ] == [uctree[w] for w in data[words]] )
         print pf[result] % (words, msg)
 
+    def variations(word):
+        result = []
+        for i in range(1, len(word)-1):
+            result.append(word[0:i]+word[i+1:])
+        return result
+
     def test():
         # Note, we add all but the bwords
         uctree = UCTree(data['hwords'])(data['_words'])
@@ -115,7 +123,8 @@ if __name__ == "__main__":
 
         toPass(uctree, '_words', '    in uctree CJK   characters after bh del')
 
-        variants = ['quick', 'quik', 'quck', 'qick']
+        UCTree.variations = variations
+        variants = variations('quick')
         uctree.add('quick')
         for variant in variants:
             uctree.add('quick', variant)
@@ -123,6 +132,5 @@ if __name__ == "__main__":
             toPass(uctree, 'qwords', '(%s is a variant of %s)' % (
                 variant, list(uctree[variant])[0]
             ))
-
 
     test()
