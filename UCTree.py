@@ -13,13 +13,32 @@ class UCTree(object):
 
     A word or list of words may be given while instancing.
     A word or list of words may be added after instancing by functor.
+
+    For canonicalization of word variants, the terminal is a set such that
+    common tree variations for dissimilar words can have multiple results.
     """
 
     end = 0xFFFF  # 0xFFFF is a non-character so it is usable as the end key.
 
+    def variations(self, word):
+        return []
+
     def __init__(self, wordlist=[]):
         self.tree = {}
         self(wordlist)
+
+    def add(self, word, variation=None):
+        (size, temp) = (len(word), self.tree)
+        if not variation:
+            variation = word
+        for o in (ord(c) for c in word):
+            temp[o] = temp.get(o, {})
+            temp = temp[o]
+        if not temp.get(UCTree.end):
+            temp[UCTree.end] = set([variation])
+        else:
+            temp[UCTree.end].add(variation)
+        return self
 
     def __call__(self, word, *args):
         "Add or delete a word or list of words to the tree"
@@ -29,11 +48,9 @@ class UCTree(object):
             if "delete" in args:
                 self.delete(word)
             else:
-                (size, temp) = (len(word), self.tree)
-                for o in (ord(c) for c in word):
-                    temp[o] = temp.get(o, {})
-                    temp = temp[o]
-                temp[UCTree.end] = word
+                self.add(word)
+                for variation in self.variations(word):
+                    self.add(word, variation)
         return self
 
     def delete(self, word, level=0, tree=None):
