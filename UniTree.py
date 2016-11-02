@@ -23,7 +23,7 @@ class UniTree(set):
     unitree[word]               getitem returns True if word is in tree.
     unitree(word, "delete")     remove word from tree
     unitree.delete(word)        remove word from tree
-    unitree.also(word, variant) add variant targeting word to tree
+    unitree.word(word, variant) add variant targeting word to tree
 
     A word or list of words may be given while instancing.
     A word or list of words may be added after instancing by functor.
@@ -40,7 +40,7 @@ class UniTree(set):
         self.tree = {}
         self(wordlist)
 
-    def also(self, word, variation=None):
+    def word(self, word, variation=None):
         (size, temp) = (len(word), self.tree)
         if not variation:
             variation = word
@@ -55,18 +55,18 @@ class UniTree(set):
         return self
 
     def __call__(self, word, *args):
-        "also or delete a word or list of words to the tree"
+        "word or delete a word or list of words to the tree"
         if type(word) == type([]):
             map(self, word)
         else:
             if "delete" in args:
                 self.delete(word)
             else:
-                self.also(word)
+                self.word(word)
                 self.add(word)
                 # TODO: internal variations mechanism doesn't work yet.
                 #for variant in UniTree.variations(word):
-                    #self.also(word, variant)
+                    #self.word(word, variant)
         return self
 
     def delete(self, word, tree=False, level=0, N=0):

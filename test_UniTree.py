@@ -99,7 +99,7 @@ class UniTreeTestCase(unittest2.TestCase):
         (word, similar) = ('hello', ['helo', 'hllo'])
         self.tree(word)
         for like in similar:
-            self.tree.also(word, like)
+            self.tree.word(word, like)
         for like in similar:
             self.assertEqual(self.tree[like], set([word]), self.doc(like))
 
