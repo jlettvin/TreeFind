@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+from pprint import pprint
+
 # CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 class CodepointTree(set):
     """
@@ -54,24 +56,31 @@ class CodepointTree(set):
             else:
                 self.also(word)
                 self.add(word)
-                # TODO: variations mechanism dpesn't work yet.
+                # TODO: variations mechanism doesn't work yet.
                 #for variant in CodepointTree.variations(word):
                     #self.also(word, variant)
         return self
 
-    def delete(self, word, level=0, tree=None):
+    def delete(self, word, tree=False, level=0, N=0):
         "Prune a word or list of words from the tree"
-        tree == tree if tree else self.tree
-        if len(word) >= level:
+        if tree is False:
+            tree = self.tree
+            N = len(word)
+            level = 0
+
+        if N <= level:
             self.discard(word)
             unique = (tree and (len(tree) == 1))
             terminal = tree and CodepointTree.end in tree
             if terminal:
                 tree[CodepointTree.end].discard(word)
             return unique and terminal
-        elif word[level] in tree:
-            if self.delete(word, level + 1, tree) and len(tree) == 1:
-                del tree[word[level]]
+
+        C = word[level]
+        O = ord(C)
+        if O in tree:
+            if self.delete(word, tree[O], level + 1, N) and len(tree) == 1:
+                del tree[O]
                 return True
             return False
 
@@ -112,7 +121,7 @@ if __name__ == "__main__":
             result.append(word[0:i]+word[i+1:])
         return result
 
-    def test():
+    def test1():
         # Note, we take all but the bwords
         uctree = CodepointTree(data['hwords'])(data['_words'])
 
@@ -141,5 +150,16 @@ if __name__ == "__main__":
             toPass(uctree, 'qwords', '(%s is a variant of %s)' % (
                 variant, list(uctree[variant])[0]
             ))
+
+    def test2():
+        uctree = CodepointTree(['hello', 'world'])
+        uctree.delete('world')
+        print len(uctree)
+        print uctree['hello']
+        print uctree['world']
+
+    def test():
+        test1()
+        test2()
 
     test()
