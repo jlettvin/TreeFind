@@ -94,12 +94,20 @@ class UniTreeTestCase(unittest2.TestCase):
         self.assertEqual(self.tree['hi'], False, self.doc())
         self.assertEqual(self.tree['globe'], False, self.doc())
 
-    def test_canonical(self):
+    def test_canonical_individual(self):
         """Tree with word variations: passing"""
         (word, similar) = ('hello', ['helo', 'hllo'])
         self.tree(word)
         for like in similar:
             self.tree.word(word, like)
+        for like in similar:
+            self.assertEqual(self.tree[like], set([word]), self.doc(like))
+
+    def test_canonical_bulk(self):
+        """Tree with word variations: passing"""
+        (word, similar) = ('hello', ['helo', 'hllo'])
+        self.tree(word)
+        self.tree.word(word, similar)
         for like in similar:
             self.assertEqual(self.tree[like], set([word]), self.doc(like))
 
