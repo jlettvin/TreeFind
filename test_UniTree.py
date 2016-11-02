@@ -1,13 +1,13 @@
 # -*- coding: utf8 -*-
 import unittest2
 
-from CodepointTree import ( CodepointTree )
+from UniTree import ( UniTree )
 
 import inspect
-class CodepointTreeTestCase(unittest2.TestCase):
+class UniTreeTestCase(unittest2.TestCase):
 
     def setUp(self):
-        self.tree = CodepointTree()
+        self.tree = UniTree()
 
     def tearDown(self):
         pass

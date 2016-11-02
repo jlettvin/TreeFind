@@ -1,12 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-from pprint import pprint
+__module__     = "UniTree.py"
+__author__     = "Jonathan D. Lettvin"
+__copyright__  = "\
+Copyright(C) 2016 Jonathan D. Lettvin, All Rights Reserved"
+__credits__    = [ "Jonathan D. Lettvin" ]
+__license__    = "GPLv3"
+__version__    = "0.0.2"
+__maintainer__ = "Jonathan D. Lettvin"
+__email__      = "jlettvin@gmail.com"
+__contact__    = "jlettvin@gmail.com"
+__status__     = "Demonstration"
+__date__       = "20161029"
 
 # CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-class CodepointTree(set):
+class UniTree(set):
     """
-    CodepointTree instances as uctree, a tree for fast specified word lookup.
+    UniTree instances as uctree, a tree for fast specified word lookup.
 
     uctree(word)            functor adds word to the tree.
     uctree[word]            getitem returns True if word is in the tree.
@@ -39,10 +50,10 @@ class CodepointTree(set):
         for o in (ord(c) for c in variation):
             temp[o] = temp.get(o, {})
             temp = temp[o]
-        if not temp.get(CodepointTree.end):
-            temp[CodepointTree.end] = set([word])
+        if not temp.get(UniTree.end):
+            temp[UniTree.end] = set([word])
         else:
-            temp[CodepointTree.end].add(word)
+            temp[UniTree.end].add(word)
         self.add(word)
         return self
 
@@ -57,7 +68,7 @@ class CodepointTree(set):
                 self.also(word)
                 self.add(word)
                 # TODO: variations mechanism doesn't work yet.
-                #for variant in CodepointTree.variations(word):
+                #for variant in UniTree.variations(word):
                     #self.also(word, variant)
         return self
 
@@ -71,9 +82,9 @@ class CodepointTree(set):
         if N <= level:
             self.discard(word)
             unique = (tree and (len(tree) == 1))
-            terminal = tree and CodepointTree.end in tree
+            terminal = tree and UniTree.end in tree
             if terminal:
-                tree[CodepointTree.end].discard(word)
+                tree[UniTree.end].discard(word)
             return unique and terminal
 
         C = word[level]
@@ -91,7 +102,7 @@ class CodepointTree(set):
             temp = temp.get(o, {})
             if temp == {}:
                 break
-        return temp.get(CodepointTree.end, False)
+        return temp.get(UniTree.end, False)
 
 # MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 if __name__ == "__main__":
@@ -123,7 +134,7 @@ if __name__ == "__main__":
 
     def test1():
         # Note, we take all but the bwords
-        uctree = CodepointTree(data['hwords'])(data['_words'])
+        uctree = UniTree(data['hwords'])(data['_words'])
 
         toPass(uctree, 'hwords', '    in uctree ASCII characters after taking')
         toPass(uctree, '_words', '    in uctree CJK   characters after taking')
@@ -141,7 +152,7 @@ if __name__ == "__main__":
 
         toPass(uctree, '_words', '    in uctree CJK   characters after bh del')
 
-        CodepointTree.variations = variations
+        UniTree.variations = variations
         variants = variations('quick')
         uctree.also('quick')
         for variant in variants:
@@ -152,7 +163,7 @@ if __name__ == "__main__":
             ))
 
     def test2():
-        uctree = CodepointTree(['hello', 'world'])
+        uctree = UniTree(['hello', 'world'])
         uctree.delete('world')
         print len(uctree)
         print uctree['hello']
