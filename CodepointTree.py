@@ -2,9 +2,9 @@
 # -*- coding: utf8 -*-
 
 # CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-class UCTree(object):
+class CodepointTree(set):
     """
-    UCTree instances as uctree, a tree for fast specified word lookup.
+    CodepointTree instances as uctree, a tree for fast specified word lookup.
 
     uctree(word)            functor adds word to the tree.
     uctree[word]            getitem returns True if word is in the tree.
@@ -16,6 +16,8 @@ class UCTree(object):
 
     For canonicalization of word variants, the terminal is a set such that
     common tree variations for dissimilar words can have multiple results.
+
+    TODO; when deleting word, delete its variations (remove from word lists).
     """
 
     end = 0xFFFF  # 0xFFFF is a non-character so it is usable as the end key.
@@ -28,38 +30,45 @@ class UCTree(object):
         self.tree = {}
         self(wordlist)
 
-    def add(self, word, variation=None):
+    def also(self, word, variation=None):
         (size, temp) = (len(word), self.tree)
         if not variation:
             variation = word
         for o in (ord(c) for c in variation):
             temp[o] = temp.get(o, {})
             temp = temp[o]
-        if not temp.get(UCTree.end):
-            temp[UCTree.end] = set([word])
+        if not temp.get(CodepointTree.end):
+            temp[CodepointTree.end] = set([word])
         else:
-            temp[UCTree.end].add(word)
+            temp[CodepointTree.end].add(word)
+        self.add(word)
         return self
 
     def __call__(self, word, *args):
-        "Add or delete a word or list of words to the tree"
+        "also or delete a word or list of words to the tree"
         if type(word) == type([]):
             map(self, word)
         else:
             if "delete" in args:
                 self.delete(word)
             else:
+                self.also(word)
                 self.add(word)
                 # TODO: variations mechanism dpesn't work yet.
-                #for variant in UCTree.variations(word):
-                    #self.add(word, variant)
+                #for variant in CodepointTree.variations(word):
+                    #self.also(word, variant)
         return self
 
     def delete(self, word, level=0, tree=None):
         "Prune a word or list of words from the tree"
         tree == tree if tree else self.tree
         if len(word) >= level:
-            return tree and UCTree.end in tree and len(tree) == 1
+            self.discard(word)
+            unique = (tree and (len(tree) == 1))
+            terminal = tree and CodepointTree.end in tree
+            if terminal:
+                tree[CodepointTree.end].discard(word)
+            return unique and terminal
         elif word[level] in tree:
             if self.delete(word, level + 1, tree) and len(tree) == 1:
                 del tree[word[level]]
@@ -73,7 +82,7 @@ class UCTree(object):
             temp = temp.get(o, {})
             if temp == {}:
                 break
-        return temp.get(UCTree.end, False)
+        return temp.get(CodepointTree.end, False)
 
 # MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 if __name__ == "__main__":
@@ -104,15 +113,15 @@ if __name__ == "__main__":
         return result
 
     def test():
-        # Note, we add all but the bwords
-        uctree = UCTree(data['hwords'])(data['_words'])
+        # Note, we take all but the bwords
+        uctree = CodepointTree(data['hwords'])(data['_words'])
 
-        toPass(uctree, 'hwords', '    in uctree ASCII characters after adding')
-        toPass(uctree, '_words', '    in uctree CJK   characters after adding')
+        toPass(uctree, 'hwords', '    in uctree ASCII characters after taking')
+        toPass(uctree, '_words', '    in uctree CJK   characters after taking')
 
-        toFail(uctree, 'bwords', 'not in uctree before adding')
+        toFail(uctree, 'bwords', 'not in uctree before taking')
         uctree(data['bwords'])
-        toPass(uctree, 'bwords', '    in uctree after  adding')
+        toPass(uctree, 'bwords', '    in uctree after  taking')
 
         for word in data['bwords']:
             uctree(word, "delete")
@@ -123,11 +132,11 @@ if __name__ == "__main__":
 
         toPass(uctree, '_words', '    in uctree CJK   characters after bh del')
 
-        UCTree.variations = variations
+        CodepointTree.variations = variations
         variants = variations('quick')
-        uctree.add('quick')
+        uctree.also('quick')
         for variant in variants:
-            uctree.add('quick', variant)
+            uctree.also('quick', variant)
         for variant in variants:
             toPass(uctree, 'qwords', '(%s is a variant of %s)' % (
                 variant, list(uctree[variant])[0]
