@@ -340,7 +340,7 @@ if __name__ == "__main__":
         if arg.test:
             test()
         else:
-            unidigit = UniDigit(ingest=False, unique=True)
+            unidigit = UniDigit(ingest=True, unique=False)
             if arg.javascript:
                 unidigit.emit()
 
@@ -351,7 +351,5 @@ if __name__ == "__main__":
                     print '%s %06x' % (codepoint, o),
                     value = value * 10 + unidigit(o)
                 print value
-
-            #pprint(unidigit)
 
     main()
