@@ -31,3 +31,4 @@ def UniDoc(msg = ""):
                 if inspect.ismethod(member):
                     if member.im_func.func_code == frame.f_code:
                         return member.__doc__ + more
+    return "unknown:" + more
