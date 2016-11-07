@@ -27,7 +27,7 @@ from ujson  import dumps
 class UniDict(dict):
 
     @staticmethod
-    def escape(string):
+    def _escape(string):
         string = string.replace("'", "\\'")
         return string
 
@@ -37,7 +37,7 @@ class UniDict(dict):
 
     def __call__(self, **kw):
         self.update({
-            filter(str.isalpha, k): UniDict.escape(w)
+            filter(str.isalpha, k): UniDict._escape(w)
             for k, w in kw.iteritems()
         })
 

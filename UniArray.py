@@ -27,8 +27,8 @@ from ujson  import dumps
 class UniArray(dict):
 
     @staticmethod
-    def ndlist(s, v):
-        return [UniArray.ndlist(s[1:], v) for i in xrange(s[0])] if s else v
+    def _ndlist(s, v):
+        return [UniArray._ndlist(s[1:], v) for i in xrange(s[0])] if s else v
 
     def __init__(self, *arg):
         self.__dict__ = self
@@ -42,7 +42,7 @@ class UniArray(dict):
         data = [value] * self.size
         dims = [d for d in self.shape]
         dims.reverse()
-        self.data = UniArray.ndlist(self.shape, value)
+        self.data = UniArray._ndlist(self.shape, value)
 
     def __call__(self, **kw):
         """
