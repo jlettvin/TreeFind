@@ -26,7 +26,7 @@ INTEGERS... can be strings have mixed digits from any supported language.
 They will be read and shown in ASCII.
 
 Author  : Jonathan D. Lettvin (jlettvin@gmail.com)
-Date    : 20161106 
+Date    : 20161106
 Legal   : Copyright(c)2016 Jonathan D. Lettvin, All Rights Reserved
 License : GPL 3.0
 """
@@ -35,7 +35,7 @@ __module__     = "UniDigit.py"
 __author__     = "Jonathan D. Lettvin"
 __copyright__  = "\
 Copyright(C) 2016 Jonathan D. Lettvin, All Rights Reserved"
-__credits__    = [ "Jonathan D. Lettvin" ]
+__credits__    = ["Jonathan D. Lettvin"]
 __license__    = "GPLv3"
 __version__    = "0.0.1"
 __maintainer__ = "Jonathan D. Lettvin"
@@ -45,6 +45,7 @@ __status__     = "Demonstration"
 __date__       = "20161106"
 
 import codecs
+
 
 class UniDigit(list):
     """
@@ -118,12 +119,13 @@ Titlecase_Mapping
                     self.codepointToDigit[codepoint] = digit
                     self.integerToCodepointList[digit].append(codepoint)
                     if self.wide or codepoint < 0x10000:  # unichr restriction
-                        self.languageToDigits[language] = self.languageToDigits.get(language, "")
+                        temp = self.languageToDigits.get(language, "")
+                        self.languageToDigits[language] = temp
                         self.languageToDigits[language] += unichr(codepoint)
 
     def _ingest(self):
         if self.kw.get('ingest', False):
-            self.integerToCodepointList = {i:[] for i in range(10)}
+            self.integerToCodepointList = {i: [] for i in range(10)}
             self.codepointToDigit = {}
             self.codepointToLanguage = {}
             self.languageToDigits = {}
@@ -137,7 +139,6 @@ Titlecase_Mapping
                 for c in self.integerToCodepointList[d]:
                     self(c, d)
         elif self.kw.get('unique', False):
-            #self(ord('0'), 0)
             for d, c in enumerate(u"0123456789"):
                 self(ord(c), d)
         else:
@@ -158,7 +159,9 @@ Titlecase_Mapping
         return self.codepointToLanguage.get(codepoint, 'Unknown')
 
     def _cut(self, c, d=None):
-        cuts = [(c>>(shft*self.bits)) & self.mask for shft in range(self.need)]
+        cuts = [
+            (c >> (shft * self.bits)) & self.mask
+            for shft in range(self.need)]
         cuts.reverse()
         (type(d) == type(int)) and cuts.append(d)
         return cuts
@@ -231,7 +234,6 @@ Digits may be freely intermixed in number strings.
         show += u',\n    '.join([
             u"%d => %s" % (i, str(self.integerToCodepointList[i]))
             for i in range(10)])
-            #for k, w in self.integerToCodepointList.iteritems()])
         show += u"\n];\n"
 
         show += u"var codepointToDigit = [\n    "
@@ -297,6 +299,7 @@ var asDigit = function(codepoint) {
             print>>target, self.productions(target)
         return self
 
+
 if __name__ == "__main__":
 
     class Arg(dict):
@@ -308,7 +311,7 @@ if __name__ == "__main__":
 
         def __init__(self, **kw):
             self.__dict__ = self
-            self.update({ k.strip('-'): w for k, w in kw.iteritems() })
+            self.update({k.strip('-'): w for k, w in kw.iteritems()})
 
     def test():
         unidigit = UniDigit(ingest=True, unique=False)

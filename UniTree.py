@@ -5,7 +5,7 @@ __module__     = "UniTree.py"
 __author__     = "Jonathan D. Lettvin"
 __copyright__  = "\
 Copyright(C) 2016 Jonathan D. Lettvin, All Rights Reserved"
-__credits__    = [ "Jonathan D. Lettvin" ]
+__credits__    = ["Jonathan D. Lettvin"]
 __license__    = "GPLv3"
 __version__    = "0.0.3"
 __maintainer__ = "Jonathan D. Lettvin"
@@ -13,6 +13,7 @@ __email__      = "jlettvin@gmail.com"
 __contact__    = "jlettvin@gmail.com"
 __status__     = "Demonstration"
 __date__       = "20161102"
+
 
 # CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 class UniTree(set):
@@ -42,7 +43,7 @@ class UniTree(set):
         self(wordlist)
 
     def word(self, root, also=None):
-        if type(also) == type([]):
+        if isinstance(also, list):
             for variation in also:
                 self.word(root, variation)
             return self
@@ -61,7 +62,7 @@ class UniTree(set):
 
     def __call__(self, word, *args):
         "word or delete a word or list of words to the tree"
-        if type(word) == type([]):
+        if isinstance(word, list):
             map(self, word)
         else:
             if "delete" in args:
@@ -70,8 +71,8 @@ class UniTree(set):
                 self.word(word)
                 self.add(word)
                 # TODO: internal variations mechanism doesn't work yet.
-                #for variant in UniTree.variations(word):
-                    #self.word(word, variant)
+                # for variant in UniTree.variations(word):
+                #     self.word(word, variant)
         return self
 
     def delete(self, root, tree=False, level=0, N=0):
