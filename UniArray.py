@@ -1,7 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-from pprint import pprint
+"""UniArray.py
+This class imitates numpy/scipy ndarray without requiring them.
+It implements an ndarray constructor and element/subset get/set.
+
+Justification: UniDigit uses a multidimensional array.
+This class will be used to manage that array.
+"""
+
 from ujson  import dumps
 
 class UniArray(dict):
@@ -12,9 +19,9 @@ class UniArray(dict):
 
     def __init__(self, *arg):
         self.__dict__ = self
-        reuireTuple = 'shape tuple of positive ints required'
-        assert len(arg) > 0, requireTuple
-        assert isinstance(arg[0], tuple), requireTuple
+        self.reuireTuple = 'shape tuple of positive ints required'
+        assert len(arg) > 0, self.requireTuple
+        assert isinstance(arg[0], tuple), self.requireTuple
         self.shape = arg[0]
         assert all([d>0 for d in self.shape]), self.requireTuple
         self.size = reduce(lambda x, y: x * y, self.shape)
@@ -24,14 +31,25 @@ class UniArray(dict):
         dims.reverse()
         self.data = UniArray.ndlist(self.shape, value)
 
-    def _offset(self, *index):
-        reuireTuple = 'shape tuple of positive ints required'
-        assert isinstance(index, tuple), requireTuple
-        index = index[0]
-        assert len(index) == len(self.shape), 'index tuple wrong length'
-        bounds = zip(index, self.shape)
-        assert all([n >= 0 and n < d for n,d in bounds]), 'index out of bounds'
-        return sum([a*b for a,b in bounds])
+    def __call__(self, **kw):
+        """
+        Thia functor substitutes contents of an instance.
+        """
+        keys  = ('shape', 'data', 'size')
+        shape = kw.get('shape', False)
+        data  = kw.get('data' , False)
+        size  = kw.get('size' , False)
+        assert shape and data and size, 'incompatible update'
+        assert all([d>0 for d in shape]), self.requireTuple
+        temp = data
+        total = 1
+        for d in shape[:-1]:
+            total *= d
+            assert len(temp) == d
+            uniq = set([(len(item), type(item)) for item in temp])
+            temp = temp[0]
+            assert len(uniq) == 1, 'all items must be of the same size/type'
+        self.update({k:v for k,v in kw.iteritems() if k in keys})
 
     def __getitem__(self, *index):
         temp = self.data
@@ -50,14 +68,6 @@ class UniArray(dict):
         value = index[1]
         self._set(self.data, index[0], index[1])
 
-    def _stack(self):
-        result = [n for n in self.data]
-        dims = [d for d in self.shape]
-        dims.reverse()
-        for d in dims:
-            result = [result[n:n+d] for n in range(0, len(result), d)]
-        return result
-
     def javascript(self, var):
         string  = "var %s = " % (var)
         string += dumps(self.data)
@@ -75,3 +85,8 @@ if __name__ == "__main__":
     print uniarray[4,2,1]
     print uniarray
     print uniarray.javascript('fun')
+    shape = (2,2)
+    size  = 4
+    data  = [[0,1], [2,3]]
+    uniarray(shape=shape, size=size, data=data)
+    print uniarray[1,1]
