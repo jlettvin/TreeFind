@@ -39,8 +39,10 @@ class UniArray(dict):
         shape = kw.get('shape', False)
         data  = kw.get('data' , False)
         size  = kw.get('size' , False)
-        assert shape and data and size, 'incompatible update'
+        want = reduce(lambda x, y: x * y, shape)
+        assert shape and data and size, 'functor: incompatible update'
         assert all([d>0 for d in shape]), self.requireTuple
+        assert want == size, 'functor: size mismatch'
         temp = data
         total = 1
         for d in shape[:-1]:
