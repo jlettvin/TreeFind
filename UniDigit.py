@@ -5,12 +5,14 @@
 
 Usage:
     UniDigit.py [-v] [INTEGER...]
+    UniDigit.py -j
     UniDigit.py -t
     UniDigit.py (-h)
     UniDigit.py (--version)
 
 Options:
     -t --test                       Run some tests
+    -j --javascript                 Produce javascript
     -v --verbose                    Show details of operation
     -h --help                       Show this Usage message
     --version                       Show version
@@ -135,7 +137,9 @@ Titlecase_Mapping
                 for c in self.integerToCodepointList[d]:
                     self(c, d)
         elif self.kw.get('unique', False):
-            self(ord('0'), 0)
+            #self(ord('0'), 0)
+            for d, c in enumerate(u"0123456789"):
+                self(ord(c), d)
         else:
             for d, c in enumerate(u"0123456789"):
                 self(ord(c), d)
@@ -224,8 +228,9 @@ Digits may be freely intermixed in number strings.
 
         show += u"var integerToCodepointList = [\n    "
         show += u',\n    '.join([
-            u"%d => %s" % (k, str(w))
-            for k, w in self.integerToCodepointList.iteritems()])
+            u"%d => %s" % (i, str(self.integerToCodepointList[i]))
+            for i in range(10)])
+            #for k, w in self.integerToCodepointList.iteritems()])
         show += u"\n];\n"
 
         show += u"var codepointToDigit = [\n    "
@@ -323,18 +328,20 @@ if __name__ == "__main__":
         if fail != 0:
             print '[FAIL] %d' % (total - okay)
 
-    import docopt
+    from docopt import docopt
+    from pprint import pprint
 
     def main():
-        arg = Arg(**docopt.docopt(__doc__, version=__version__))
+        arg = Arg(**docopt(__doc__, version=__version__))
         if arg.verbose:
             pprint.pprint(arg)
 
         if arg.test:
             test()
         else:
-            unidigit = UniDigit(ingest=True, unique=False)
-            unidigit.emit()
+            unidigit = UniDigit(ingest=False, unique=True)
+            if arg.javascript:
+                unidigit.emit()
 
             for string in arg.INTEGER:
                 value = 0
@@ -343,5 +350,7 @@ if __name__ == "__main__":
                     print '%s %06x' % (codepoint, o),
                     value = value * 10 + unidigit(o)
                 print value
+
+            pprint(unidigit)
 
     main()
