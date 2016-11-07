@@ -226,6 +226,7 @@ Digits may be freely intermixed in number strings.
  */
 """
 
+        # TODO Fix the bug in this code
         show += u"var integerToCodepointList = [\n    "
         show += u',\n    '.join([
             u"%d => %s" % (i, str(self.integerToCodepointList[i]))
@@ -334,7 +335,7 @@ if __name__ == "__main__":
     def main():
         arg = Arg(**docopt(__doc__, version=__version__))
         if arg.verbose:
-            pprint.pprint(arg)
+            pprint(arg)
 
         if arg.test:
             test()
@@ -351,6 +352,6 @@ if __name__ == "__main__":
                     value = value * 10 + unidigit(o)
                 print value
 
-            pprint(unidigit)
+            #pprint(unidigit)
 
     main()
