@@ -1,43 +1,53 @@
-PEP8IGNORE=--ignore=E201,E203,E207,E221,E272
-PEP8=UniArray.pep8 UniDict.pep8 UniDigit.pep8 UniDoc.pep8 UniTree.pep8
-PYFL=UniArray.pyfl UniDict.pyfl UniDigit.pyfl UniDoc.pyfl UniTree.pyfl
+#!/usr/bin/env make
+#
+# PEP8 rules are intentionally violated as follows:
+# E203 Vertically lining up ',' is preferred to the standard for readability.
+# E221 Vertically lining up '=' is preferred to the standard for readability.
+PEP8IGNORE=--ignore=E203,E221
+PEP8=\
+	 UniArray.pep8 \
+	 UniDict.pep8 \
+	 UniDigit.pep8 \
+	 UniDoc.pep8 \
+	 UniTree.pep8
+PYFL=\
+	 UniArray.pyfl \
+	 UniDict.pyfl \
+	 UniDigit.pyfl \
+	 UniDoc.pyfl \
+	 UniTree.pyfl
+ARTIFACTS=\
+	$(PEP8) \
+	$(PYFL) \
+	*.pyc \
+	*.js \
+	*.out
+MODULES=UniArray UniDict UniDigit UniDoc UniTree
 
-all: $(PEP8) $(PYFL)
+%.pep8 : %.py
+	@-pep8 $(PEP8IGNORE) $< > $@ 2>&1
+
+%.pyfl : %.py
+	@-pyflakes $< > $@ 2>&1
+
+all: $(PEP8) $(PYFL) Makefile
+	@echo "Ran Quality Control checks with pep8 and pyflakes."
+	@echo \
+		`wc -c *.pep8 *.pyfl \
+		|sed -e 's/  */ /' \
+		|cut -d' ' -f2 \
+		|tr '\n' '+' \
+		|sed -e 's/+$$//' \
+		|bc` bytes of error found
 
 .PHONY:
 test:
-	@py.test
+	@echo "TODO: Unit tests need to be improved."
+	@echo "Run unit tests on $(MODULES)."
+	@py.test > py.test.out 2>&1
+	@cat py.test.out
 
 .PHONY:
 clean:
-	@rm -f *.pep8 *.pyfl *.pyc *.js
-
-UniArray.pep8: UniArray.py
-	@-pep8 $(PEP8IGNORE) $< > $@ 2>&1
-
-UniArray.pyfl: UniArray.py
-	@-pyflakes $< > $@ 2>&1
-
-UniDict.pep8: UniDict.py
-	@-pep8 $(PEP8IGNORE) $< > $@ 2>&1
-
-UniDict.pyfl: UniDict.py
-	@-pyflakes $< > $@ 2>&1
-
-UniDigit.pep8: UniDigit.py
-	@-pep8 $(PEP8IGNORE) $< > $@ 2>&1
-
-UniDigit.pyfl: UniDigit.py
-	@-pyflakes $< > $@ 2>&1
-
-UniDoc.pep8: UniDoc.py
-	@-pep8 $(PEP8IGNORE) $< > $@ 2>&1
-
-UniDoc.pyfl: UniDoc.py
-	@-pyflakes $< > $@ 2>&1
-
-UniTree.pep8: UniTree.py
-	@-pep8 $(PEP8IGNORE) $< > $@ 2>&1
-
-UniTree.pyfl: UniTree.py
-	@-pyflakes $< > $@ 2>&1
+	@echo "Remove intermediate files not used in the git repository."
+	@rm -f $(ARTIFACTS)
