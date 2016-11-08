@@ -5,6 +5,10 @@ PYFL=UniArray.pyfl UniDict.pyfl UniDigit.pyfl UniDoc.pyfl UniTree.pyfl
 all: $(PEP8) $(PYFL)
 
 .PHONY:
+test:
+	@py.test
+
+.PHONY:
 clean:
 	@rm -f *.pep8 *.pyfl *.pyc *.js
 
