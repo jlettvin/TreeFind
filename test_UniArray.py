@@ -80,14 +80,14 @@ class UniArrayTestCase(unittest2.TestCase):
         uniarray[1,1] = [7, 9]
         self.assertEquals(uniarray, expect, UniDoc())
 
-    #def test_2x2x2_modify_block(self):
-        #"""
-        #Construct a 0 initialized eight member array.
-        #Modify a top-level block.
-        #"""
-        #data = [[[0, 0], [0, 0]], [[5, 6], [7, 8]]]
-        #expect = {'shape': (2, 2, 2), 'data': data, 'size': 8}
-        #uniarray = UniArray((2, 2, 2), 0)
+    def test_2x2x2_modify_block(self):
+        """
+        Construct a 0 initialized eight member array.
+        Modify a top-level block.
+        """
+        data = [[[0, 0], [0, 0]], [[5, 6], [7, 8]]]
+        expect = {'shape': (2, 2, 2), 'data': data, 'size': 8}
+        uniarray = UniArray((2, 2, 2), 0)
         #uniarray[1] = [[5, 6], [7, 8]]
         #self.assertEquals(uniarray, expect, UniDoc())
 
