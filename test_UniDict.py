@@ -15,7 +15,8 @@ __date__       = "20161107"
 
 import unittest2
 
-from UniDict import ( UniDict )
+from UniDict  import ( UniDict  )
+from UniDoc   import ( UniDoc   )
 
 import inspect
 class UniDictTestCase(unittest2.TestCase):
@@ -31,11 +32,16 @@ class UniDictTestCase(unittest2.TestCase):
         self.assertEqual(unidict, {})
 
     def test_simple(self):
-        sample = {
+        """
+        Check for proper conversions of member names and data fields.
+        """
+        before = {
             " Strip.This*Token": "But: Leave+This$Alone",
             "12BuckleMyShoe34TryItSomeMore": "Does'nt this work?"
         }
-        unidict = UniDict(**sample)
-        for k,w in unidict.iteritems():
-            pass
-
+        after = {
+            "StripThisToken": "But: Leave+This$Alone",
+            "BuckleMyShoeTryItSomeMore": "Does\\'nt this work?"
+        }
+        unidict = UniDict(**before)
+        self.assertEqual(unidict, after, UniDoc())
