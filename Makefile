@@ -44,6 +44,7 @@ all: $(PEP8) $(PYFL) Makefile
 todo:
 	@echo "TODO: Integrate UniDict in place of self.__dict__ = self dict"
 	@echo "TODO: Unit tests need to be improved."
+	@echo "TODO: Unit test for UniArray top-level block replacement fails.
 
 .PHONY:
 test:
