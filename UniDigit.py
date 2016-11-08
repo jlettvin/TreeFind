@@ -183,6 +183,9 @@ Titlecase_Mapping
             self.append([_] * self.enum)
         self.append([-1] * self.enum)
         self._ingest()
+        self.shape = (len(self), len(self[0]))
+        if self.verbose:
+            print 'table shape (%d,%d)' % self.shape
 
     def __call__(self, codepoint, digit=-1):
         if type(codepoint) in [type(u""), type("")]:
@@ -301,16 +304,7 @@ var asDigit = function(codepoint) {
 
 if __name__ == "__main__":
 
-    class Arg(dict):
-        """Arg
-        This class enables direct use of dictionary elements as class members.
-        For example: self["foo"] is identical to self.foo.
-        Command-line options typically have '-' characters which are stripped.
-        """
-
-        def __init__(self, **kw):
-            self.__dict__ = self
-            self.update({k.strip('-'): w for k, w in kw.iteritems()})
+    from UniDict import (UniDict)
 
     def test():
         unidigit = UniDigit(ingest=True, unique=False)
@@ -335,7 +329,7 @@ if __name__ == "__main__":
     from pprint import pprint
 
     def main():
-        arg = Arg(**docopt(__doc__, version=__version__))
+        arg = UniDict(**docopt(__doc__, version=__version__))
         if arg.verbose:
             pprint(arg)
 

@@ -41,8 +41,12 @@ all: $(PEP8) $(PYFL) Makefile
 		|bc` bytes of error found
 
 .PHONY:
-test:
+todo:
+	@echo "TODO: Integrate UniDict in place of self.__dict__ = self dict"
 	@echo "TODO: Unit tests need to be improved."
+
+.PHONY:
+test:
 	@echo "Run unit tests on $(MODULES)."
 	@py.test > py.test.out 2>&1
 	@cat py.test.out

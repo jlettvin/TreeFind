@@ -26,7 +26,8 @@ class UniDict(dict):
 
     @staticmethod
     def _escape(string):
-        string = string.replace("'", "\\'")
+        if isinstance(string, str):
+            string = string.replace("'", "\\'")
         return string
 
     def __init__(self, **kw):
