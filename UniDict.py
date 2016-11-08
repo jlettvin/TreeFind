@@ -21,9 +21,6 @@ __contact__    = "jlettvin@gmail.com"
 __status__     = "Demonstration"
 __date__       = "20161107"
 
-from pprint import pprint
-from ujson  import dumps
-
 
 class UniDict(dict):
 

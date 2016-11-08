@@ -47,7 +47,7 @@ class UniTree(set):
             for variation in also:
                 self.word(root, variation)
             return self
-        (size, fork) = (len(root), self.tree)
+        fork = self.tree
         if not also:
             also = root
         for o in (ord(c) for c in also):  # iteration costs less than recursion

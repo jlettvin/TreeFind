@@ -203,7 +203,6 @@ Titlecase_Mapping
                 print("    INSERT %d %06x %s" % (digit, codepoint, cuts))
             for segment in cuts[:-1]:
                 N = len(self)
-                that = this
                 if self[this][segment] == -1:
                     if this < self.base:
                         self[this][segment] = digit

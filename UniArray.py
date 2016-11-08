@@ -42,9 +42,6 @@ class UniArray(dict):
         assert all([d > 0 for d in self.shape]), self.requireTuple
         self.size = reduce(lambda x, y: x * y, self.shape)
         value = 0 if len(arg) < 2 else arg[1]
-        data = [value] * self.size
-        dims = [d for d in self.shape]
-        dims.reverse()
         self.data = UniArray._ndlist(self.shape, value)
 
     def __call__(self, **kw):
@@ -83,7 +80,6 @@ class UniArray(dict):
             self._set(d[t[0]], t[1:], v)
 
     def __setitem__(self, *index):
-        value = index[1]
         self._set(self.data, index[0], index[1])
 
     def javascript(self, var):
