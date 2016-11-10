@@ -9,7 +9,7 @@ The label list contains an alphabetically sorted sequence of
 all the documented codepoint classifications and
 '__' is used for errors although it is not a legal classifier.
 
-The alpha string contains a b64 encoded bz2 compressed string which expands to
+The index string contains a b64 encoded bz2 compressed string which expands to
 a string of length 0x110000, meaning
 there is one character for each valid codepoint in all of Unicode 9.0.0.
 
@@ -40,7 +40,7 @@ class UniClass(object):
         "Mc", "Me", "Mn", "Nd", "Nl", "No", "Pc", "Pd", "Pe", "Pf", "Pi",
         "Po", "Ps", "Sc", "Sk", "Sm", "So", "Zl", "Zp", "Zs",
     ]
-    alpha = bz2.decompress(''.join("""
+    index = bz2.decompress(''.join("""
 QlpoOTFBWSZTWZ1WjuQAIZt///////////7vsvY7F9HcwJeIlAQgUBAJAnAoMVQgFDTYYA3S
 L492ztgazDVVtTFqw2QUk0oF2zu7k7FtdtMsOICTJqekm2hNMmhTyTR6ageo9QHqGQAaABoA
 AAAGgAGg00IAmiT0jTTQRqj2qbU8k2ieUyZAHqBoaHqAaGhoADIZA0D1EGmJgAAAAAAAAAAA
@@ -105,7 +105,7 @@ Jt4TdgiKWlR/8XckU4UJCdVo7kA=
     @staticmethod
     def classify(codepoint):
         codepoint = codepoint if isinstance(codepoint, int) else ord(codepoint)
-        return UniClass.label[ord(UniClass.alpha[codepoint])]
+        return UniClass.label[ord(UniClass.index[codepoint])]
 
 if __name__ == "__main__":
 
