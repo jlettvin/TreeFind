@@ -6,12 +6,14 @@
 PEP8IGNORE=--ignore=E203,E221
 PEP8=\
 	 UniArray.pep8 \
+	 UniClass.pep8 \
 	 UniDict.pep8 \
 	 UniDigit.pep8 \
 	 UniDoc.pep8 \
 	 UniTree.pep8
 PYFL=\
 	 UniArray.pyfl \
+	 UniClass.pyfl \
 	 UniDict.pyfl \
 	 UniDigit.pyfl \
 	 UniDoc.pyfl \
@@ -22,7 +24,7 @@ ARTIFACTS=\
 	*.pyc \
 	*.js \
 	*.out
-MODULES=UniArray UniDict UniDigit UniDoc UniTree
+MODULES=UniArray UniClass UniDict UniDigit UniDoc UniTree
 
 %.pep8 : %.py
 	@-pep8 $(PEP8IGNORE) $< > $@ 2>&1
