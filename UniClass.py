@@ -40,7 +40,7 @@ class UniClass(object):
         "Mc", "Me", "Mn", "Nd", "Nl", "No", "Pc", "Pd", "Pe", "Pf", "Pi",
         "Po", "Ps", "Sc", "Sk", "Sm", "So", "Zl", "Zp", "Zs",
     ]
-    index = bz2.decompress(''.join("""
+    index = bz2.decompress("""
 QlpoOTFBWSZTWZ1WjuQAIZt///////////7vsvY7F9HcwJeIlAQgUBAJAnAoMVQgFDTYYA3S
 L492ztgazDVVtTFqw2QUk0oF2zu7k7FtdtMsOICTJqekm2hNMmhTyTR6ageo9QHqGQAaABoA
 AAAGgAGg00IAmiT0jTTQRqj2qbU8k2ieUyZAHqBoaHqAaGhoADIZA0D1EGmJgAAAAAAAAAAA
@@ -100,7 +100,7 @@ mOsvnCRyBBSSWiYjTKaRkOkQQgKMscspdVYR0bDWLzotWGZYXbM4gIgANLtLLcefV4tfSkPQ
 M2nOvos1YpJ5TfomFjHxKKljWqhclPJyyLvFjgWVUdoEOpKRRPDFM+q8s880qUjWYqFn7vGV
 glge3KKjNRVSodE5BbBa45MorGSC2jUFVVEbbpD9naUqRPWq1Jbmo9lRIAdiiERRQeJTpNpp
 Jt4TdgiKWlR/8XckU4UJCdVo7kA=
-""").decode('base64'))
+""".decode('base64'))
 
     @staticmethod
     def classify(codepoint):
