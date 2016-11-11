@@ -24,10 +24,10 @@ PYFL=\
 
 GRAMMARS=artifacts/classify16.g4 artifacts/classify21.g4
 
+# keep classify*.g4 as production (TODO move them to artifacts)
 ARTIFACTS=\
 	$(PEP8) \
 	$(PYFL) \
-	classify*.g4 \
 	*Lexer.py \
 	*Parser.py \
 	*Visitor.py \
