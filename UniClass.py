@@ -5,12 +5,37 @@
 A namespace for identifying a codepoint character class.
 
 This module has been hand-crafted for Unicode 9.0.0.
+It is constructed by extracting data from UnicodeData.txt and PropList.txt,
+both being core normative Unicode resources.
+UnicodeData.txt has a linear sequence of codepoints with gaps.
+PropList.txt has groups of individual codepoint and codepoint ranges.
+Both identify a label given in column 3 of UnicodeData.txt.
+PropList.txt may be sufficient, but redundancy is not problematic.
+
+The properties (label) count is 30 (0-29) including '__' for error.
+A linear string of bytes having values 0-29 of length 0x110000 is constructed
+where byte values are indices of the property (label) name in the label list.
+
+The advantage for this method is that vast tracts of unicode comprise
+codepoints sharing a single property.  These are excellent statistics for
+compression of the string by bz2 encoded in b64.  The count of bytes in the b64
+is 4204 bytes representing a complete set of properties for 1114112 codepoints.
+
+These 4204 bytes are decompressed to 1114112 bytes of property label indices
+at module import time (class member initialization).
+The memory footprint of this module is slightly more than 1MiB.
+Once decompressed, the time to determine a label is simply a double dereference
+with the codepoint dereferencing a index byte from the decompressed string and
+the index byte dereferencing a property label from the label list.
+This is an O(1) operation where a dictionary lookup would be O(logN) at least
+if dictionaries are used.  Also, no branch points are used.
+
 The label list contains an alphabetically sorted sequence of
 all the documented codepoint classifications and
 '__' is used for errors although it is not a legal classifier.
 
 The index string contains a b64 encoded bz2 compressed string which expands to
-a string of length 0x110000, meaning
+a string of length 0x110000, which means that
 there is one character for each valid codepoint in all of Unicode 9.0.0.
 
 Each character is actually an ordinal which is a direct index into label.
