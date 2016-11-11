@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+
+"""test_UniDoc.py
+This module tests test_Codepoint grammar which imports "classify16" grammar.
+"""
+
+__module__     = "test_Codepoint.py"
+__author__     = "Jonathan D. Lettvin"
+__copyright__  = "\
+Copyright(C) 2016 Jonathan D. Lettvin, All Rights Reserved"
+__credits__    = [ "Jonathan D. Lettvin" ]
+__license__    = "GPLv3"
+__version__    = "0.0.1"
+__maintainer__ = "Jonathan D. Lettvin"
+__email__      = "jlettvin@gmail.com"
+__contact__    = "jlettvin@gmail.com"
+__status__     = "Demonstration"
+__date__       = "20161111"
+
+import unittest2
+
+from UniDoc   import ( UniDoc   )
+
+from antlr4                             import *
+from test_CodepointLexer                import (    test_CodepointLexer     )
+from test_CodepointListener             import (    test_CodepointListener  )
+from test_CodepointParser               import (    test_CodepointParser    )
+
+class test_CodepointPrintListener(test_CodepointListener):
+
+    def enterHello(self, ctx):
+        #if not self.result:
+        self.result = "[PASS] classify: %s" % (ctx.ID())
+
+    def enterCodepoint(self, ctx):
+        #if not self.result:
+        self.result = "[FAIL] classify: %s" % (ctx.ID())
+
+    def __str__(self):
+        return self.result
+
+class UniDocTestCase(unittest2.TestCase):
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_simple(self):
+        """
+        Does "hello ID" get identified?
+        """
+        lexer = test_CodepointLexer(InputStream("hello unittest"))
+        stream = CommonTokenStream(lexer)
+        parser = test_CodepointParser(stream)
+        tree = parser.prog()
+        printer = test_CodepointPrintListener()
+        walker = ParseTreeWalker()
+        walker.walk(printer, tree)
+
+        self.assertEqual("[PASS] classify: unittest", str(printer), UniDoc())
