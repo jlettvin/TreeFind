@@ -27,6 +27,11 @@ from test_CodepointLexer                import (    test_CodepointLexer     )
 from test_CodepointListener             import (    test_CodepointListener  )
 from test_CodepointParser               import (    test_CodepointParser    )
 
+import sys  
+
+reload(sys)  
+sys.setdefaultencoding('utf8')
+
 class test_CodepointPrintListener(test_CodepointListener):
 
     def enterHello(self, ctx):
@@ -38,7 +43,7 @@ class test_CodepointPrintListener(test_CodepointListener):
         self.result = "[FAIL] classify: %s" % (ctx.ID())
 
     def __str__(self):
-        return self.result
+        return unicode(self.result)
 
 class UniDocTestCase(unittest2.TestCase):
 
@@ -48,9 +53,9 @@ class UniDocTestCase(unittest2.TestCase):
     def tearDown(self):
         pass
 
-    def test_simple(self):
+    def test_English(self):
         """
-        Does "hello ID" get identified?
+        Does "hello unittest" get identified?
         """
         lexer = test_CodepointLexer(InputStream("hello unittest"))
         stream = CommonTokenStream(lexer)
@@ -60,4 +65,19 @@ class UniDocTestCase(unittest2.TestCase):
         walker = ParseTreeWalker()
         walker.walk(printer, tree)
 
-        self.assertEqual("[PASS] classify: unittest", str(printer), UniDoc())
+        self.assertEquals(u"[PASS] classify: unittest", str(printer), UniDoc())
+
+    def test_Chinese(self):
+        """
+        Does "hello 愚公移山" get identified?
+        """
+        expect = u"[PASS] classify: 愚公移山"
+        lexer = test_CodepointLexer(InputStream(u"hello 愚公移山"))
+        stream = CommonTokenStream(lexer)
+        parser = test_CodepointParser(stream)
+        tree = parser.prog()
+        printer = test_CodepointPrintListener()
+        walker = ParseTreeWalker()
+        walker.walk(printer, tree)
+
+        self.assertEquals(expect, str(printer), UniDoc())
