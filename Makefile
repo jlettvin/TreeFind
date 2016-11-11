@@ -58,7 +58,7 @@ all: $(PEP8) $(PYFL) grammar Makefile
 		|bc` bytes of error found
 
 classify16.g4: UniGrammar.py
-	./UniGrammar.py
+	@./UniGrammar.py
 
 grammar: classify16.g4 test_Codepoint.g4
 		@$(antlr4) -Dlanguage=Python2 -visitor test_Codepoint.g4
