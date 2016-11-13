@@ -162,6 +162,7 @@ Titlecase_Mapping
         cuts = [
             (c >> (shft * self.bits)) & self.mask
             for shft in range(self.need)]
+        # Using low digits first increases probability of table sharing.
         # cuts.reverse()
         (type(d) == type(int)) and cuts.append(d)
         return cuts
