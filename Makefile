@@ -95,8 +95,8 @@ grammar: classify16.g4 test_Codepoint.g4
 .PHONY:
 todo:
 	@echo "TODO: Integrate UniDict in place of self.__dict__ = self dict"
-	@echo "TODO: Unit tests need to be improved."
-	@echo "TODO: Unit test for UniArray top-level block replacement fails.
+	@echo "TODO: Unit test for UniArray top-level block replacement fails."
+	@echo "TODO: Add codepoint cutting to UniTree to replace dictionary lookup"
 	@echo "`date '+%Y/%m/%d %H:%M:%S'` $@"
 
 .PHONY:
