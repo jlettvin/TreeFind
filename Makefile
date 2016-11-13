@@ -22,7 +22,7 @@ __date__       = "20161113"
 
 
 # E202 is thrown when 
-PEP8IGNORE=--ignore=E128,E202,E203,E221,E241,E272
+PEP8IGNORE=--ignore=E122,E128,E201,E202,E203,E221,E241,E272
 
 PEP8=\
 	 UniArray.pep8 \
@@ -69,7 +69,7 @@ antlr4=java -jar /usr/local/lib/antlr-4.5.3-complete.jar
 %.pyfl : %.py
 	@-pyflakes $< > $@ 2>&1
 
-all: $(PEP8) $(PYFL) grammar report Makefile
+all: $(PEP8) $(PYFL) grammar test report Makefile
 
 .PHONY:
 report:

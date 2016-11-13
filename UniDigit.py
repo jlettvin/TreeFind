@@ -48,6 +48,7 @@ import codecs
 
 from UniCut import (UniCut)
 
+
 class UniDigit(list):
     """
     This class ingests UnicodeData.txt and organizes digits from all languages
@@ -276,7 +277,11 @@ var asDigit = function(codepoint) {
     return done == null ? -1 : done;
 };
 };
-""" % (self.bits, self.mask, self.need, self.preIndex.the.base, self.preIndex.the.base)
+""" % ( self.bits,
+        self.mask,
+        self.need,
+        self.preIndex.the.base,
+        self.preIndex.the.base)
 
         return show
 
