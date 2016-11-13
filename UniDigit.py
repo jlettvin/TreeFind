@@ -46,6 +46,7 @@ __date__       = "20161106"
 
 import codecs
 
+from UniCut import (UniCut)
 
 class UniDigit(list):
     """
@@ -158,31 +159,15 @@ Titlecase_Mapping
             codepoint = ord(codepoint)
         return self.codepointToLanguage.get(codepoint, 'Unknown')
 
-    def _cut(self, c, d=None):
-        cuts = [
-            (c >> (shft * self.bits)) & self.mask
-            for shft in range(self.need)]
-        # Using low digits first increases probability of table sharing.
-        # cuts.reverse()
-        (type(d) == type(int)) and cuts.append(d)
-        return cuts
-
     def __init__(self, **kw):
         self.kw = kw
         self.verbose = self.kw.get('verbose', False)
         self.codepointToDigit = {}
-        codepointBits = 21
-        self.base = 10
+        self.preIndex = UniCut()
         self.wide = self.kw.get('wide', False)
-        self.bits = self.kw.get('bits', 3)  # 3:8-bit tables, 4:16-bit tables
-        self.enum = 1 << self.bits
-        self.mask = self.enum - 1
-        self.need = (codepointBits / self.bits)
-        self.need += int((codepointBits % self.bits) != 0)
-        self.poss = self.need * self.bits
-        for _ in range(self.base):
-            self.append([_] * self.enum)
-        self.append([-1] * self.enum)
+        for _ in range(self.preIndex.the.base):
+            self.append([_] * self.preIndex.the.enum)
+        self.append([-1] * self.preIndex.the.enum)
         self._ingest()
         self.shape = (len(self), len(self[0]))
         if self.verbose:
@@ -194,25 +179,25 @@ Titlecase_Mapping
         this = 10
         if digit == -1:
             # get mode
-            cuts = self._cut(codepoint)
+            cuts = self.preIndex.cut(codepoint)
             for segment in cuts:
                 this = self[this][segment]
-                if this < self.base:
+                if this < self.preIndex.the.base:
                     return this
             return digit
         else:
             # put mode
-            cuts = self._cut(codepoint)
+            cuts = self.preIndex.cut(codepoint)
             if self.verbose:
                 print("    INSERT %d %06x %s" % (digit, codepoint, cuts))
             for segment in cuts[:-1]:
                 N = len(self)
                 if self[this][segment] == -1:
-                    if this < self.base:
+                    if this < self.preIndex.the.base:
                         self[this][segment] = digit
                     else:
                         self[this][segment] = N
-                        self.append([-1] * self.enum)
+                        self.append([-1] * self.preIndex.the.enum)
                         this = N
                 else:
                     this = self[this][segment]
@@ -291,7 +276,7 @@ var asDigit = function(codepoint) {
     return done == null ? -1 : done;
 };
 };
-""" % (self.bits, self.mask, self.need, self.base, self.base)
+""" % (self.bits, self.mask, self.need, self.preIndex.the.base, self.preIndex.the.base)
 
         return show
 
