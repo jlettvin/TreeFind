@@ -162,7 +162,7 @@ Titlecase_Mapping
         cuts = [
             (c >> (shft * self.bits)) & self.mask
             for shft in range(self.need)]
-        cuts.reverse()
+        # cuts.reverse()
         (type(d) == type(int)) and cuts.append(d)
         return cuts
 

@@ -99,6 +99,37 @@ class UniTree(set):
                 return True
             return False
 
+    def _graphviz(self, tree, token=u""):
+        text = u""
+        for k, w in tree.iteritems():
+            if k == self.end:
+                terminal = u','.join(w)
+                text += u'"%s" -> "[%s]" [label="$"];\n' % (token, terminal)
+                text += u'"[%s]" -> "STOP";\n' % (terminal)
+            else:
+                newtoken = token + unichr(k)
+                text += u'"%s";\n' % (newtoken)
+                if token is not u"":
+                    label = u'[label="' + unichr(k) + u'"];'
+                    text += u'"%s" -> "%s" %s\n' % (token, newtoken, label)
+                text += self._graphviz(w, newtoken)
+                if tree == self.tree:
+                    fmt = '"START" -> "%s" [label="%s"];\n'
+                    text += fmt % (newtoken, unichr(k))
+        return text
+
+    def graphviz(self, dotname="UniTree.dot"):
+        head = 'digraph tree {\n  rankdir=LR;\n  concentrate=true;\n'
+        tail = "}"
+
+        with open(dotname, "w+b") as dotstream:
+            try:
+                print>>dotstream, head + self._graphviz(self.tree) + tail
+            except:
+                pass
+            finally:
+                pass
+
     def __getitem__(self, find):
         "Find in the tree"
         fork = self.tree
