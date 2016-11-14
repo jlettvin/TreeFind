@@ -67,6 +67,14 @@ class UniCut(list):
                     (self.the.codepointBits / self.the.bits) +
                     int((self.the.codepointBits % self.the.bits) != 0)))
             self.the(mask = enum - 1, poss = self.the.need * self.the.bits)
+        # Initialize the list of lists
+        self.append([-1] * self.the.enum)
+
+    #def __call(self, codepoint, digit=-1):
+        #cuts = self.cut(codepoint):
+            #N = len(self)
+            #if self[this][segment] == -1:
+                #pass
 
     def cut(self, c):
         cuts = [

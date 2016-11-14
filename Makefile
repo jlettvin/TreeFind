@@ -65,54 +65,54 @@ antlr4=java -jar /usr/local/lib/antlr-4.5.3-complete.jar
 
 %.pep8 : %.py
 	@-pep8 $(PEP8IGNORE) $< > $@ 2>&1
+	@./timestamp $@ pep8 checked
 
 %.pyfl : %.py
 	@-pyflakes $< > $@ 2>&1
+	@./timestamp $@ pyflakes checked
 
-all: $(PEP8) $(PYFL) grammar test report Makefile
+all: $(PEP8) $(PYFL) grammar test report todo Makefile
+	@./timestamp $@ finished
 
 .PHONY:
 report:
-	@echo "Ran Quality Control checks with pep8 and pyflakes."
-	@echo \
+	@./timestamp $@ \
 		`wc -c *.pep8 *.pyfl \
 		|sed -e 's/  */ /' \
 		|cut -d' ' -f2 \
 		|tr '\n' '+' \
 		|sed -e 's/+$$//' \
 		|bc` bytes of error found
-	@echo "`date '+%Y/%m/%d %H:%M:%S'` $@"
+	@./timestamp $@ generated
 
 classify16.g4: UniGrammar.py
 	@./UniGrammar.py
-	@echo "`date '+%Y/%m/%d %H:%M:%S'` $@"
+	@./timestamp $@ generated
 
 grammar: classify16.g4 test_Codepoint.g4
 	@$(antlr4) -Dlanguage=Python2 -visitor test_Codepoint.g4
 	@./test_Codepoint.py
-	@echo "`date '+%Y/%m/%d %H:%M:%S'` $@"
+	@./timestamp $@ tested
 
 .PHONY:
 todo:
-	@echo "TODO: Integrate UniDict in place of self.__dict__ = self dict"
-	@echo "TODO: Unit test for UniArray top-level block replacement fails."
-	@echo "TODO: Add codepoint cutting to UniTree to replace dictionary lookup"
-	@echo "`date '+%Y/%m/%d %H:%M:%S'` $@"
+	@./timestamp $@ "Integrate UniDict replacing"
+	@./timestamp $@ "Failing unit test in UniArray top-level block"
+	@./timestamp $@ "Add UniTree codepoint cutting replacing dict lookup"
 
 .PHONY:
 test:
-	@echo "`date '+%Y/%m/%d %H:%M:%S'` $@ begin tests"
-	@echo "Run unit tests on $(MODULES)."
-	@py.test > py.test.out 2>&1
+	@./timestamp $@ $(MODULES)
+	@-py.test > py.test.out 2>&1
 	@cat py.test.out
-	@echo "`date '+%Y/%m/%d %H:%M:%S'` $@ end tests"
-	@echo "`date '+%Y/%m/%d %H:%M:%S'` $@ begin graphviz"
-	@echo "Converting .dot files to .svg using dot (graphviz suite)"
-	@set -e;for f in $$(ls *.dot|sed -e 's/.dot//');do dot -Tpng $$f.dot > $$f.png;done
-	@echo "`date '+%Y/%m/%d %H:%M:%S'` $@ end graphviz"
+	@./timestamp $@ test to graphviz dot to png
+	@set -e;\
+		for f in $$(ls *.dot|sed -e 's/.dot//');\
+		    do dot -Tpng $$f.dot > $$f.png;\
+		done
+	@./timestamp $@ tested and graphed
 
 .PHONY:
 clean:
-	@echo "Remove intermediate files not used in the git repository."
 	@rm -f $(ARTIFACTS)
-	@echo "`date '+%Y/%m/%d %H:%M:%S'` $@"
+	@./timestamp $@
