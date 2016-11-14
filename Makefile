@@ -63,56 +63,58 @@ MODULES=UniArray UniClass UniDict UniDigit UniDoc UniTree
 
 antlr4=java -jar /usr/local/lib/antlr-4.5.3-complete.jar
 
+timestamp=echo `date '+%Y/%m/%d %H:%M:%S'` $(1)
+
 %.pep8 : %.py
 	@-pep8 $(PEP8IGNORE) $< > $@ 2>&1
-	@./timestamp $@ pep8 checked
+	@$(call timestamp,$@ checked)
 
 %.pyfl : %.py
 	@-pyflakes $< > $@ 2>&1
-	@./timestamp $@ pyflakes checked
+	@$(call timestamp,$@ checked)
 
 all: $(PEP8) $(PYFL) grammar test report todo Makefile
-	@./timestamp $@ finished
+	@$(call timestamp,$@ finished)
 
 .PHONY:
 report:
-	@./timestamp $@ \
+	@$(call timestamp,$@ \
 		`wc -c *.pep8 *.pyfl \
 		|sed -e 's/  */ /' \
 		|cut -d' ' -f2 \
 		|tr '\n' '+' \
 		|sed -e 's/+$$//' \
-		|bc` bytes of error found
-	@./timestamp $@ generated
+		|bc` bytes of error found)
+	@$(call timestamp,$@ generated)
 
 classify16.g4: UniGrammar.py
 	@./UniGrammar.py
-	@./timestamp $@ generated
+	@$(call timestamp,$@ generated)
 
 grammar: classify16.g4 test_Codepoint.g4
 	@$(antlr4) -Dlanguage=Python2 -visitor test_Codepoint.g4
 	@./test_Codepoint.py
-	@./timestamp $@ tested
+	@$(call timestamp,$@ tested)
 
 .PHONY:
 todo:
-	@./timestamp $@ "Integrate UniDict replacing"
-	@./timestamp $@ "Failing unit test in UniArray top-level block"
-	@./timestamp $@ "Add UniTree codepoint cutting replacing dict lookup"
+	@$(call timestamp,$@ Integrate UniDict replacing)
+	@$(call timestamp,$@ Failing unit test in UniArray top-level block)
+	@$(call timestamp,$@ Add UniTree codepoint cutting replacing dict lookup)
 
 .PHONY:
 test:
-	@./timestamp $@ $(MODULES)
+	@$(call timestamp,$@ $(MODULES))
 	@-py.test > py.test.out 2>&1
 	@cat py.test.out
-	@./timestamp $@ test to graphviz dot to png
+	@$(call timestamp,$@ test to graphviz dot to png)
 	@set -e;\
 		for f in $$(ls *.dot|sed -e 's/.dot//');\
 		    do dot -Tpng $$f.dot > $$f.png;\
 		done
-	@./timestamp $@ tested and graphed
+	@$(call timestamp,$@ tested and graphed)
 
 .PHONY:
 clean:
 	@rm -f $(ARTIFACTS)
-	@./timestamp $@
+	@$(call timestamp,$@)
