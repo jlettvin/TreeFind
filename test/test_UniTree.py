@@ -16,8 +16,12 @@ __date__       = "20161107"
 import unittest2
 import inspect
 
-from UniTree import ( UniTree )
-from UniDoc import (UniDoc, UniName)
+import sys
+sys.path.append('.')
+sys.path.append('..')
+
+from UniTree    import (UniTree        )
+from UniDoc     import (UniDoc, UniName)
 
 
 class UniTreeTestCase(unittest2.TestCase):
@@ -124,7 +128,7 @@ class UniTreeTestCase(unittest2.TestCase):
 
     def test_canonical_unix_words(self):
         """Tree with thousands of words: passing"""
-        with open("local/words") as text:
+        with open("../local/words") as text:
             words = text.read().split()
             self.tree(words)
             for word in words:
@@ -132,7 +136,7 @@ class UniTreeTestCase(unittest2.TestCase):
 
     def test_canonical_100_words(self):
         """Tree with 100 words: passing"""
-        with open("local/words.100.txt") as text:
+        with open("../local/words.100.txt") as text:
             words = text.read().split()
             self.tree(words)
             for word in words:

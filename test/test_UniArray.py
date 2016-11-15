@@ -14,11 +14,15 @@ __status__     = "Demonstration"
 __date__       = "20161107"
 
 import unittest2
+import inspect
+
+import sys
+sys.path.append('.')
+sys.path.append('..')
 
 from UniDoc   import ( UniDoc   )
 from UniArray import ( UniArray )
 
-import inspect
 
 class UniArrayTestCase(unittest2.TestCase):
 

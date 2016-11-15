@@ -18,8 +18,13 @@ __date__       = "20161107"
 
 import unittest2
 
+import sys
+sys.path.append('.')
+sys.path.append('..')
+
 from UniDigit import ( UniDigit )
 from UniDoc   import ( UniDoc   )
+
 
 class UniDigitTestCase(unittest2.TestCase):
 

@@ -14,11 +14,15 @@ __status__     = "Demonstration"
 __date__       = "20161107"
 
 import unittest2
+import inspect
+
+import sys
+sys.path.append('.')
+sys.path.append('..')
 
 from UniDict  import ( UniDict  )
 from UniDoc   import ( UniDoc   )
 
-import inspect
 class UniDictTestCase(unittest2.TestCase):
 
     def setUp(self):

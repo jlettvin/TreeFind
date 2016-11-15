@@ -18,6 +18,10 @@ __date__       = "20161107"
 
 import unittest2
 
+import sys
+sys.path.append('.')
+sys.path.append('..')
+
 from UniCut   import ( UniCut )
 from UniDoc   import ( UniDoc )
 

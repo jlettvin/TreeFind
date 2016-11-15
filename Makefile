@@ -21,27 +21,12 @@ __status__     = "Demonstration"
 __date__       = "20161113"
 
 
+MODULES=UniArray UniClass UniDict UniDigit UniDoc UniGrammar UniTree
+PEP8=$(patsubst %, %.pep8, $(MODULES))
+PYFL=$(patsubst %, %.pyfl, $(MODULES))
+
 # E202 is thrown when 
 PEP8IGNORE=--ignore=E122,E128,E201,E202,E203,E221,E241,E272
-
-PEP8=\
-	 UniArray.pep8 \
-	 UniClass.pep8 \
-	 UniDict.pep8 \
-	 UniDigit.pep8 \
-	 UniDoc.pep8 \
-	 UniGrammar.pep8 \
-	 UniTree.pep8
-
-PYFL=\
-	 UniArray.pyfl \
-	 UniClass.pyfl \
-	 UniDict.pyfl \
-	 UniDigit.pyfl \
-	 UniDoc.pyfl \
-	 UniGrammar.pyfl \
-	 UniTree.pyfl
-
 GRAMMARS=artifacts/classify16.g4 artifacts/classify21.g4
 
 # keep classify*.g4 as production (TODO move them to artifacts)
@@ -52,14 +37,14 @@ ARTIFACTS=\
 	*Parser.py \
 	*Visitor.py \
 	*Listener.py \
+	test/*.dot \
+	test/*.png \
 	*.tokens \
 	*.dot \
 	*.js \
 	*.pyc \
 	*.png \
 	*.out
-
-MODULES=UniArray UniClass UniDict UniDigit UniDoc UniTree
 
 antlr4=java -jar /usr/local/lib/antlr-4.5.3-complete.jar
 
@@ -73,7 +58,7 @@ timestamp=echo `date '+%Y/%m/%d %H:%M:%S'` $(1)
 	@-pyflakes $< > $@ 2>&1
 	@$(call timestamp,$@ checked)
 
-all: $(PEP8) $(PYFL) grammar test report todo Makefile
+all: $(PEP8) $(PYFL) grammar test graphviz report todo Makefile
 	@$(call timestamp,$@ finished)
 
 .PHONY:
@@ -96,6 +81,9 @@ grammar: classify16.g4 test_Codepoint.g4
 	@./test_Codepoint.py
 	@$(call timestamp,$@ tested)
 
+SUBDIRS=test
+.PHONY: subdirs $(SUBDIRS)
+
 .PHONY:
 todo:
 	@$(call timestamp,$@ Integrate UniDict replacing)
@@ -103,16 +91,18 @@ todo:
 	@$(call timestamp,$@ Add UniTree codepoint cutting replacing dict lookup)
 
 .PHONY:
-test:
-	@$(call timestamp,$@ $(MODULES))
-	@-py.test > py.test.out 2>&1
-	@cat py.test.out
-	@$(call timestamp,$@ test to graphviz dot to png)
+$(SUBDIRS):
+	@$(call timestamp,$@ begins)
+	@$(MAKE) -C $@
+	@$(call timestamp,$@ ends)
+
+graphviz:
+	@$(call timestamp,$@ dot to png begins)
 	@set -e;\
-		for f in $$(ls *.dot|sed -e 's/.dot//');\
+		for f in $$(ls test/*.dot|sed -e 's/.dot//');\
 		    do dot -Tpng $$f.dot > $$f.png;\
 		done
-	@$(call timestamp,$@ tested and graphed)
+	@$(call timestamp,$@ dot to png ends)
 
 .PHONY:
 clean:

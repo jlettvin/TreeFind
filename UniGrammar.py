@@ -21,7 +21,6 @@ __status__     = "Demonstration"
 __date__       = "20161111"
 
 from datetime import (datetime)
-
 import re
 
 from UniClass import (UniClass)
