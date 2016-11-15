@@ -24,7 +24,7 @@ __contact__    = "jlettvin@gmail.com"
 __status__     = "Demonstration"
 __date__       = "20161107"
 
-from ujson import (dumps)
+from json import (dumps)
 
 
 class UniArray(dict):

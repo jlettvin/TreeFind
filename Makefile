@@ -58,7 +58,7 @@ timestamp=echo `date '+%Y/%m/%d %H:%M:%S'` $(1)
 	@-pyflakes $< > $@ 2>&1
 	@$(call timestamp,$@ checked)
 
-all: $(PEP8) $(PYFL) grammar test graphviz report todo Makefile
+all: $(PEP8) $(PYFL) grammar unittest graphviz report todo Makefile
 	@$(call timestamp,$@ finished)
 
 .PHONY:
@@ -81,14 +81,21 @@ grammar: classify16.g4 test_Codepoint.g4
 	@./test_Codepoint.py
 	@$(call timestamp,$@ tested)
 
-SUBDIRS=test
-.PHONY: subdirs $(SUBDIRS)
-
 .PHONY:
 todo:
 	@$(call timestamp,$@ Integrate UniDict replacing)
 	@$(call timestamp,$@ Failing unit test in UniArray top-level block)
 	@$(call timestamp,$@ Add UniTree codepoint cutting replacing dict lookup)
+
+.PHONY:
+unittest:
+	@$(call timestamp,$@ begins)
+	@pytest > pytest.out 2>&1
+	@cat pytest.out
+	@$(call timestamp,$@ end)
+
+SUBDIRS=test
+.PHONY: subdirs $(SUBDIRS)
 
 .PHONY:
 $(SUBDIRS):
