@@ -7,6 +7,7 @@
 # This makefile controls a variety of operations performed on this library
 # for use by developers in refactorings, improvements, and bug fixes
 
+# Legal block
 __module__     = "Makefile"
 __author__     = "Jonathan D. Lettvin"
 __copyright__  = "\
@@ -21,13 +22,12 @@ __status__     = "Demonstration"
 __date__       = "20161113"
 
 
+# Definitions
 MODULES=UniArray UniClass UniDict UniDigit UniDoc UniGrammar UniTree
 PEP8=$(patsubst %, %.pep8, $(MODULES))
 PYFL=$(patsubst %, %.pyfl, $(MODULES))
 PLNT=$(patsubst %, %.plnt, $(MODULES))
 
-# E202 is thrown when 
-PEP8IGNORE=--ignore=E122,E128,E201,E202,E203,E221,E241,E272
 GRAMMARS=artifacts/classify16.g4 artifacts/classify21.g4
 
 # keep classify*.g4 as production (TODO move them to artifacts)
@@ -48,6 +48,41 @@ ARTIFACTS=\
 	*.png \
 	*.out
 
+# Disable some PEP8 checks because the preferred style for Uni is different.
+# Uni prefers vertical alignment of like code elements.
+# E122:  continuation line missing indentation or outdented
+# E128:  continuation line under-indented for visual indent
+# E201:  whitespace after ‘(‘
+# E202:  whitespace before ‘)’
+# E203:  whitespace before ‘:’
+# E221:  multiple spaces before operator
+# E241:  multiple spaces after ‘,’
+# E272:  multiple spaces before keyword
+PEP8IGNORE=--ignore=E122,E128,E201,E202,E203,E221,E241,E272
+
+# Disable some pylint checks because the preferred style for Uni is different
+# bad-whitespace:  Uni prefers vertical alignment of like code elements
+# attribute-defined-outside-init:  Uni does not follow RAII rules
+# no-member:  Uni uses special rules to turn dict indices into instance members
+# invalid-name:  External libraries do not follow pylint rules
+# super-init-not-called:  Same as no-member, empty dicts do not need super
+# superfluous-parends:  print in python 3 requires them
+# relative-import:  TODO this is worth refining
+# too-many-instance-attributes:  we need more than pylint allows
+# too-many-locals:  same as too-many-instance-attributes
+PYLINTIGNORE=\
+bad-whitespace \
+attribute-defined-outside-init \
+no-member \
+invalid-name \
+super-init-not-called \
+superfluous-parens \
+relative-import \
+too-many-instance-attributes \
+too-many-locals
+
+PYLINTDISABLE=$(patsubst %, --disable=%, $(PYLINTIGNORE))
+
 antlr4=java -jar /usr/local/lib/antlr-4.5.3-complete.jar
 
 timestamp=echo `date '+%Y/%m/%d %H:%M:%S'` $(1)
@@ -61,7 +96,7 @@ timestamp=echo `date '+%Y/%m/%d %H:%M:%S'` $(1)
 	@$(call timestamp,$@ checked)
 
 %.plnt : %.py
-	@-pylint $< > $@ 2>&1
+	@-pylint $(PYLINTDISABLE) $< > $@ 2>&1
 	@$(call timestamp,$@ checked)
 
 all: $(PEP8) $(PYFL) $(PLNT) grammar unittest graphviz report todo Makefile

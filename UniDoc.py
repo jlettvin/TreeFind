@@ -44,18 +44,3 @@ class UniDoc(object):
     def name(more=""):
         "Fetch the name of the calling(running) function."
         return inspect.stack()[1][3] + more
-
-
-#def UniName(more=""):
-    #return inspect.stack()[1][3] + more
-    #frame = inspect.currentframe().f_back
-    #for objref in frame.f_globals.values():
-        #if inspect.isfunction(objref):
-            #if objref.func_code == frame.f_code:
-                #return objref.__name__ + more
-        #elif inspect.isclass(objref):
-            #for name, member in inspect.getmembers(objref):
-                #if inspect.ismethod(member):
-                    #if member.im_func.func_code == frame.f_code:
-                        #return member.__name__ + more
-    #return "unknown" + more

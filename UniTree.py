@@ -39,12 +39,13 @@ class UniTree(set):
     TODO; when deleting word, delete its variations (remove from word lists).
     """
 
-    def __init__(self, wordlist=[], **kw):  # pylint: disable=dangerous-default-value
+    def __init__(self, **kw):
         self.kw = kw
+        self.wordlist = kw.get('wordlist', [])
         self.case = kw.get('ignorecase', False)
         self.end = kw.get('end', 0xFFFF)  # non-codepoint usable as end key.
         self.tree = {}
-        self(wordlist)
+        self(self.wordlist)
 
     def word(self, root, also=None):
         "For a word, insert it into tree or retrieve it from tree"
@@ -132,7 +133,7 @@ class UniTree(set):
             try:
                 print>>dotstream, head + self._graphviz(self.tree) + tail
             except Exception as why:  # pylint: disable=broad-except
-                print("Can't open: %s(%s)" % (dotname, str(why)))
+                print("Can't output: %s(%s)" % (dotname, str(why)))
             finally:
                 pass
 
