@@ -24,6 +24,7 @@ __date__       = "20161113"
 MODULES=UniArray UniClass UniDict UniDigit UniDoc UniGrammar UniTree
 PEP8=$(patsubst %, %.pep8, $(MODULES))
 PYFL=$(patsubst %, %.pyfl, $(MODULES))
+PLNT=$(patsubst %, %.plnt, $(MODULES))
 
 # E202 is thrown when 
 PEP8IGNORE=--ignore=E122,E128,E201,E202,E203,E221,E241,E272
@@ -33,6 +34,7 @@ GRAMMARS=artifacts/classify16.g4 artifacts/classify21.g4
 ARTIFACTS=\
 	$(PEP8) \
 	$(PYFL) \
+	$(PLNT) \
 	*Lexer.py \
 	*Parser.py \
 	*Visitor.py \
@@ -58,7 +60,11 @@ timestamp=echo `date '+%Y/%m/%d %H:%M:%S'` $(1)
 	@-pyflakes $< > $@ 2>&1
 	@$(call timestamp,$@ checked)
 
-all: $(PEP8) $(PYFL) grammar unittest graphviz report todo Makefile
+%.plnt : %.py
+	@-pylint $< > $@ 2>&1
+	@$(call timestamp,$@ checked)
+
+all: $(PEP8) $(PYFL) $(PLNT) grammar unittest graphviz report todo Makefile
 	@$(call timestamp,$@ finished)
 
 .PHONY:

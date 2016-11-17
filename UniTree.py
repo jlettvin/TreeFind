@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+"""
+This module creates word trees, splices, prunes, and queries.
+"""
+
 __module__     = "UniTree.py"
 __author__     = "Jonathan D. Lettvin"
 __copyright__  = "\
@@ -35,7 +39,7 @@ class UniTree(set):
     TODO; when deleting word, delete its variations (remove from word lists).
     """
 
-    def __init__(self, wordlist=[], **kw):
+    def __init__(self, wordlist=[], **kw):  # pylint: disable=dangerous-default-value
         self.kw = kw
         self.case = kw.get('ignorecase', False)
         self.end = kw.get('end', 0xFFFF)  # non-codepoint usable as end key.
@@ -43,6 +47,7 @@ class UniTree(set):
         self(wordlist)
 
     def word(self, root, also=None):
+        "For a word, insert it into tree or retrieve it from tree"
         if isinstance(also, list):
             for variation in also:
                 self.word(root, variation)
@@ -119,14 +124,15 @@ class UniTree(set):
         return text
 
     def graphviz(self, dotname="UniTree.dot"):
+        "Produce .dot file for use by graphviz external program"
         head = 'digraph tree {\n  rankdir=LR;\n  concentrate=true;\n'
         tail = "}"
 
         with open(dotname, "w+b") as dotstream:
             try:
                 print>>dotstream, head + self._graphviz(self.tree) + tail
-            except:
-                pass
+            except Exception as why:  # pylint: disable=broad-except
+                print("Can't open: %s(%s)" % (dotname, str(why)))
             finally:
                 pass
 

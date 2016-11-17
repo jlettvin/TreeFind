@@ -27,12 +27,14 @@ from UniClass import (UniClass)
 
 
 class UniGrammar(dict):
+    "Means of production for antlr4 grammars"
 
     def __init__(self):
+        "Initialize grammars for antlr4"
         self.uniclass = UniClass()
         self.labelled = {label: [] for label in UniClass.label}
         that = None
-        top = 0x110000
+        codepoint, top = 0x0, 0x110000
         for codepoint in xrange(top):
             this = UniClass.classify(codepoint)
             if that != this:
@@ -53,7 +55,7 @@ class UniGrammar(dict):
 
         self.identify = [0] * top
         with open("local/Blocks.txt") as source:
-            pattern = re.compile("([0-9A-F]{4,6})\.\.([0-9A-F]{4,6}); (.*)")
+            pattern = re.compile(r"([0-9A-F]{4,6})\.\.([0-9A-F]{4,6}); (.*)")
             self.block = {}
 
             for line in source:
@@ -74,6 +76,7 @@ class UniGrammar(dict):
                     self.identify[codepoint] = i
 
     def antlr4(self, **kw):
+        "Generate the grammar file according to the kw parameters"
         width = kw.get('width', 21)
         prefix = kw.get('prefix', 'CLASSIFY_')
         emit = """/** classify%d.g4

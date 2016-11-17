@@ -48,4 +48,4 @@ class UniDictTestCase(unittest2.TestCase):
             "BuckleMyShoeTryItSomeMore": "Does\\'nt this work?"
         }
         unidict = UniDict(**before)
-        self.assertEqual(unidict, after, UniDoc())
+        self.assertEqual(unidict, after, UniDoc.doc())

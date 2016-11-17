@@ -106,6 +106,7 @@ Titlecase_Mapping
         self.line = UniDigit.UnicodeDataLine(columnNames)
 
     def _digitDataIngest(self):
+        "Get data from unicode.org file from which to create tables"
         with open("local/UnicodeData.txt") as source:
             while True:
                 if not self.line(source.readline()):
@@ -126,6 +127,7 @@ Titlecase_Mapping
                         self.languageToDigits[language] += unichr(codepoint)
 
     def _ingest(self):
+        "get data to initialize the tables"
         if self.kw.get('ingest', False):
             self.integerToCodepointList = {i: [] for i in range(10)}
             self.codepointToDigit = {}
@@ -137,30 +139,33 @@ Titlecase_Mapping
 
             if self.verbose:
                 print(str(self.integerToCodepointList))
-            for d in self.integerToCodepointList.keys():
-                for c in self.integerToCodepointList[d]:
-                    self(c, d)
+            for integer in self.integerToCodepointList.keys():
+                for character in self.integerToCodepointList[integer]:
+                    self(character, integer)
         elif self.kw.get('unique', False):
-            for d, c in enumerate(u"0123456789"):
-                self(ord(c), d)
+            for integer, character in enumerate(u"0123456789"):
+                self(ord(character), integer)
         else:
-            for d, c in enumerate(u"0123456789"):
-                self(ord(c), d)
-            for d, c in enumerate(u"௦௧௨௩௪௫௬௭௮௯"):
-                self(ord(c), d)
+            for integer, character in enumerate(u"0123456789"):
+                self(ord(character), integer)
+            for integer, character in enumerate(u"௦௧௨௩௪௫௬௭௮௯"):
+                self(ord(character), integer)
         return self
 
     def sequence(self, language=None):
+        "Generate the digit string '0-9' for a given language"
         if language is None:
             return self.languageToDigits.keys()
         return self.languageToDigits.get(language, "unknown")
 
     def whatLanguageIs(self, codepoint):
-        if type(codepoint) == type(u""):
+        "Return the language block name associated with a codepoint"
+        if isinstance(codepoint, type(u"")):
             codepoint = ord(codepoint)
         return self.codepointToLanguage.get(codepoint, 'Unknown')
 
     def __init__(self, **kw):
+        "Create tables"
         self.kw = kw
         self.verbose = self.kw.get('verbose', False)
         self.codepointToDigit = {}
@@ -175,7 +180,8 @@ Titlecase_Mapping
             print 'table shape (%d,%d)' % self.shape
 
     def __call__(self, codepoint, digit=-1):
-        if type(codepoint) in [type(u""), type("")]:
+        "functor to either add dogit codepoint pairs or find codepoint digits"
+        if isinstance(codepoint, type(u"")) or isinstance(codepoint, type("")):
             codepoint = ord(codepoint)
         this = 10
         if digit == -1:
@@ -206,7 +212,8 @@ Titlecase_Mapping
                     print 'self[%d][%d] = %d' % (this, segment, this)
             self[this][cuts[-1]] = digit
 
-    def productions(self, target):
+    def productions(self):
+        "create javascript usable content"
         show = u"""
 document.jlettvin = {};
 document.jlettvin.unidigit = {
@@ -286,10 +293,11 @@ var asDigit = function(codepoint) {
         return show
 
     def emit(self):
+        "Generate javascript usable tables and function."
         with open('UniDigit.js', 'w+b') as target:
             UTF8Writer = codecs.getwriter('utf8')
             target = UTF8Writer(target)
-            print>>target, self.productions(target)
+            print>>target, self.productions()
         return self
 
 
@@ -298,6 +306,7 @@ if __name__ == "__main__":
     from UniDict import (UniDict)
 
     def test():
+        "Simple local unit test"
         unidigit = UniDigit(ingest=True, unique=False)
         failpass = ['[FAIL] %d u%06x %s', '[PASS] %d u%06x %s']
         total = 0
@@ -320,6 +329,7 @@ if __name__ == "__main__":
     from pprint import pprint
 
     def main():
+        "Entrypoint for local testing and use"
         arg = UniDict(**docopt(__doc__, version=__version__))
         if arg.verbose:
             pprint(arg)
@@ -334,9 +344,9 @@ if __name__ == "__main__":
             for string in arg.INTEGER:
                 value = 0
                 for codepoint in string.decode('utf-8'):
-                    o = ord(codepoint)
-                    print '%s %06x' % (codepoint, o),
-                    value = value * 10 + unidigit(o)
+                    ordinal = ord(codepoint)
+                    print '%s %06x' % (codepoint, ordinal),
+                    value = value * 10 + unidigit(ordinal)
                 print value
 
     main()

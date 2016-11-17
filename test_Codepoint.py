@@ -65,7 +65,9 @@ class UniDocTestCase(unittest2.TestCase):
         walker = ParseTreeWalker()
         walker.walk(printer, tree)
 
-        self.assertEquals(u"[PASS] classify: unittest", str(printer), UniDoc())
+        self.assertEquals(u"[PASS] classify: unittest",
+                str(printer),
+                UniDoc.doc())
 
     def test_Chinese(self):
         """
@@ -80,4 +82,6 @@ class UniDocTestCase(unittest2.TestCase):
         walker = ParseTreeWalker()
         walker.walk(printer, tree)
 
-        self.assertEquals(expect, str(printer), UniDoc())
+        self.assertEquals(expect,
+                str(printer),
+                UniDoc.doc())

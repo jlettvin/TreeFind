@@ -36,4 +36,4 @@ class UniDocTestCase(unittest2.TestCase):
     def test_selfdoc(self):
         """Check for __doc__ string access"""
         d="Check for __doc__ string access"
-        self.assertEqual(d, UniDoc(), UniDoc())
+        self.assertEqual(d, UniDoc.doc(), UniDoc.doc())

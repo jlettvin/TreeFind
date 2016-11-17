@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
+# pylint: disable=too-few-public-methods
 
 """UniClass.py
 A namespace for identifying a codepoint character class.
@@ -59,11 +60,12 @@ import bz2
 
 
 class UniClass(object):
+    "Identify the Unicode gc class of a codepoint."
 
     label = ["__",  # Added index 0 error label '__' to existing labels.
-            "Cc", "Cf", "Cn", "Co", "Cs", "Ll", "Lm", "Lo", "Lt", "Lu",
-            "Mc", "Me", "Mn", "Nd", "Nl", "No", "Pc", "Pd", "Pe", "Pf",
-            "Pi", "Po", "Ps", "Sc", "Sk", "Sm", "So", "Zl", "Zp", "Zs"]
+             "Cc", "Cf", "Cn", "Co", "Cs", "Ll", "Lm", "Lo", "Lt", "Lu",
+             "Mc", "Me", "Mn", "Nd", "Nl", "No", "Pc", "Pd", "Pe", "Pf",
+             "Pi", "Po", "Ps", "Sc", "Sk", "Sm", "So", "Zl", "Zp", "Zs"]
     index = bz2.decompress("""
 QlpoOTFBWSZTWZ1WjuQAIZt///////////7vsvY7F9HcwJeIlAQgUBAJAnAoMVQgFDTYYA3S
 L492ztgazDVVtTFqw2QUk0oF2zu7k7FtdtMsOICTJqekm2hNMmhTyTR6ageo9QHqGQAaABoA
@@ -128,6 +130,7 @@ Jt4TdgiKWlR/8XckU4UJCdVo7kA=
 
     @staticmethod
     def classify(codepoint):
+        "This fetches a codepoint gc classification by multiple dereference"
         codepoint = codepoint if isinstance(codepoint, int) else ord(codepoint)
         return UniClass.label[ord(UniClass.index[codepoint])]
 

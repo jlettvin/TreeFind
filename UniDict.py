@@ -23,6 +23,7 @@ __date__       = "20161107"
 
 
 class UniDict(dict):
+    "Convert a dictionary into a namespace."
 
     @staticmethod
     def _escape(string):
@@ -30,7 +31,7 @@ class UniDict(dict):
             string = string.replace("'", "\\'")
         return string
 
-    def __init__(self, **kw):
+    def __init__(self, **kw):  # pylint: disable=super-init-not-called
         self.__dict__ = self
         self(**kw)
 
@@ -41,6 +42,7 @@ class UniDict(dict):
         })
 
     def javascript(self, var):
+        "Emit as javascript readable string"
         string  = "var %s = {\n    " % (var)
         string += ",\n    ".join([
             "%s => '%s'" % (k, w)
@@ -51,14 +53,14 @@ class UniDict(dict):
 
 if __name__ == "__main__":
 
-    sample = {
+    SAMPLE = {
         " Strip.This*Token": "But: Leave+This$Alone",
         "12BuckleMyShoe34TryItSomeMore": "Does'nt this work?"
     }
-    unidict = UniDict(**sample)
+    UNIDICT = UniDict(**SAMPLE)
 
     print '-' * 78
-    print unidict.javascript("sample")
+    print UNIDICT.javascript("sample")
     print '-' * 78
-    print unidict.StripThisToken
+    print UNIDICT.StripThisToken  # pylint: disable=no-member
     print '-' * 78

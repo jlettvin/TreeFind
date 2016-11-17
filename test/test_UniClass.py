@@ -63,5 +63,5 @@ $	000024	Sc
             A, B, C = line.split()
             if A and B and C:
                 codepoint = ord(A)
-                self.assertEqual(codepoint, int(B, 0x10), UniDoc())
-                self.assertEqual(UniClass.classify(codepoint), C, UniDoc())
+                self.assertEqual(codepoint, int(B, 0x10), UniDoc.doc())
+                self.assertEqual(UniClass.classify(codepoint), C, UniDoc.doc())
