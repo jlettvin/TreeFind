@@ -1,10 +1,10 @@
 # -*- coding: utf8 -*-
 
-"""UniDoc.py
+"""Self.py
 This function enables the calling function to retrieve its own __doc__ string.
 """
 
-__module__     = "UniDoc.py"
+__module__     = "Self.py"
 __author__     = "Jonathan D. Lettvin"
 __copyright__  = "\
 Copyright(C) 2016 Jonathan D. Lettvin, All Rights Reserved"
@@ -20,7 +20,7 @@ __date__       = "20161107"
 import inspect
 
 
-class UniDoc(object):
+class Self(object):
     "Access routines for runtime introspection."
 
     @staticmethod

@@ -23,7 +23,7 @@ __date__       = "20161113"
 
 
 # Definitions
-MODULES=UniArray UniClass UniDict UniDigit UniDoc UniGrammar UniTree
+MODULES=UniArray UniClass UniDict UniDigit Self UniGrammar UniTree
 PEP8=$(patsubst %, %.pep8, $(MODULES))
 PYFL=$(patsubst %, %.pyfl, $(MODULES))
 PLNT=$(patsubst %, %.plnt, $(MODULES))

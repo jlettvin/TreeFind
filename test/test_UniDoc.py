@@ -1,9 +1,9 @@
 # -*- coding: utf8 -*-
 
-"""test_UniDoc.py
+"""test_Self.py
 """
 
-__module__     = "test_UniDoc.py"
+__module__     = "test_Self.py"
 __author__     = "Jonathan D. Lettvin"
 __copyright__  = "\
 Copyright(C) 2016 Jonathan D. Lettvin, All Rights Reserved"
@@ -22,10 +22,10 @@ import sys
 sys.path.append('.')
 sys.path.append('..')
 
-from UniDoc   import ( UniDoc   )
+from Self   import ( Self   )
 
 
-class UniDocTestCase(unittest2.TestCase):
+class SelfTestCase(unittest2.TestCase):
 
     def setUp(self):
         pass
@@ -36,4 +36,4 @@ class UniDocTestCase(unittest2.TestCase):
     def test_selfdoc(self):
         """Check for __doc__ string access"""
         d="Check for __doc__ string access"
-        self.assertEqual(d, UniDoc.doc(), UniDoc.doc())
+        self.assertEqual(d, Self.doc(), Self.doc())

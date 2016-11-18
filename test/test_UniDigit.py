@@ -23,7 +23,7 @@ sys.path.append('.')
 sys.path.append('..')
 
 from UniDigit import ( UniDigit )
-from UniDoc   import ( UniDoc   )
+from Self   import ( Self   )
 
 
 class UniDigitTestCase(unittest2.TestCase):

@@ -23,7 +23,7 @@ sys.path.append('.')
 sys.path.append('..')
 
 from UniCut   import ( UniCut )
-from UniDoc   import ( UniDoc )
+from Self   import ( Self )
 
 class UniCutTestCase(unittest2.TestCase):
 

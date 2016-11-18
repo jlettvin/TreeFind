@@ -21,7 +21,7 @@ sys.path.append('.')
 sys.path.append('..')
 
 from UniDict  import ( UniDict  )
-from UniDoc   import ( UniDoc   )
+from Self   import ( Self   )
 
 class UniDictTestCase(unittest2.TestCase):
 
@@ -48,4 +48,4 @@ class UniDictTestCase(unittest2.TestCase):
             "BuckleMyShoeTryItSomeMore": "Does\\'nt this work?"
         }
         unidict = UniDict(**before)
-        self.assertEqual(unidict, after, UniDoc.doc())
+        self.assertEqual(unidict, after, Self.doc())

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-"""test_UniDoc.py
+"""test_Self.py
 This module tests test_Codepoint grammar which imports "classify16" grammar.
 """
 
@@ -20,7 +20,7 @@ __date__       = "20161111"
 
 import unittest2
 
-from UniDoc   import ( UniDoc   )
+from Self   import ( Self   )
 
 from antlr4                             import *
 from test_CodepointLexer                import (    test_CodepointLexer     )
@@ -45,7 +45,7 @@ class test_CodepointPrintListener(test_CodepointListener):
     def __str__(self):
         return unicode(self.result)
 
-class UniDocTestCase(unittest2.TestCase):
+class SelfTestCase(unittest2.TestCase):
 
     def setUp(self):
         pass
@@ -67,7 +67,7 @@ class UniDocTestCase(unittest2.TestCase):
 
         self.assertEquals(u"[PASS] classify: unittest",
                 str(printer),
-                UniDoc.doc())
+                Self.doc())
 
     def test_Chinese(self):
         """
@@ -84,4 +84,4 @@ class UniDocTestCase(unittest2.TestCase):
 
         self.assertEquals(expect,
                 str(printer),
-                UniDoc.doc())
+                Self.doc())

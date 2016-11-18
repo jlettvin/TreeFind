@@ -22,11 +22,11 @@ import sys
 sys.path.append('.')
 sys.path.append('..')
 
-from UniDoc   import ( UniDoc   )
+from Self   import ( Self   )
 from UniClass import ( UniClass )
 
 
-class UniDocTestCase(unittest2.TestCase):
+class SelfTestCase(unittest2.TestCase):
 
     def setUp(self):
         pass
@@ -63,5 +63,5 @@ $	000024	Sc
             A, B, C = line.split()
             if A and B and C:
                 codepoint = ord(A)
-                self.assertEqual(codepoint, int(B, 0x10), UniDoc.doc())
-                self.assertEqual(UniClass.classify(codepoint), C, UniDoc.doc())
+                self.assertEqual(codepoint, int(B, 0x10), Self.doc())
+                self.assertEqual(UniClass.classify(codepoint), C, Self.doc())
