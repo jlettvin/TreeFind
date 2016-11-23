@@ -20,8 +20,8 @@ import sys
 sys.path.append('.')
 sys.path.append('..')
 
-from UniTree    import (UniTree)
-from Self     import (Self )
+from UniTree  import (UniTree)
+from Self     import (Self   )
 
 
 class UniTreeTestCase(unittest2.TestCase):
@@ -126,8 +126,12 @@ class UniTreeTestCase(unittest2.TestCase):
                 self.assertEqual(self.tree[like], set([word]), Self.doc(like))
         self.tree.graphviz("test_UniTree_%s.dot" % (Self.name()))
 
+    #"""
+    # These unit tests work with dict in UniTree.py
+    # These unit tests are excluded when using CPT in UniTree.py
+    # TODO When CPT is re-implemented in C, re-introduce these test methods
     def test_canonical_unix_words(self):
-        """Tree with thousands of words: passing"""
+        "Tree with thousands of words: passing"
         with open("../local/words") as text:
             words = text.read().split()
             self.tree(words)
@@ -135,13 +139,14 @@ class UniTreeTestCase(unittest2.TestCase):
                 self.assertEqual(self.tree[word], set([word]), Self.doc())
 
     def test_canonical_100_words(self):
-        """Tree with 100 words: passing"""
+        "Tree with 100 words: passing"
         with open("../local/words.100.txt") as text:
             words = text.read().split()
             self.tree(words)
             for word in words:
                 self.assertEqual(self.tree[word], set([word]), Self.doc())
         self.tree.graphviz("test_UniTree_%s.dot" % (Self.name()))
+    #"""
 
     def test_delete_size(self):
         """Tree word deletion: size decrements by 1"""

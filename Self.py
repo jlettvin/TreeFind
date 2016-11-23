@@ -27,18 +27,20 @@ class Self(object):
     def doc(msg=""):
         "Fetch the docstring of the calling(running) function."
         more = " (%s)" % (msg) if msg else ""
-        frame = inspect.currentframe().f_back
-        for objref in frame.f_globals.values():
-            if inspect.isfunction(objref):
-                if objref.func_code == frame.f_code:
-                    return objref.__doc__ + more
-            elif inspect.isclass(objref):
-                for name, member in inspect.getmembers(objref):
-                    name = name  # Prevent pylint error
-                    if inspect.ismethod(member):
-                        if member.im_func.func_code == frame.f_code:
-                            return member.__doc__ + more
-        return "unknown:" + more
+        try:
+            frame = inspect.currentframe().f_back
+            for objref in frame.f_globals.values():
+                if inspect.isfunction(objref):
+                    if objref.func_code == frame.f_code:
+                        return objref.__doc__ + more
+                elif inspect.isclass(objref):
+                    for name, member in inspect.getmembers(objref):
+                        name = name  # Prevent pylint error
+                        if inspect.ismethod(member):
+                            if member.im_func.func_code == frame.f_code:
+                                return member.__doc__ + more
+        except:
+            return "undocumented:" + more
 
     @staticmethod
     def name(more=""):

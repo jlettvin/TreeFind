@@ -179,10 +179,12 @@ Titlecase_Mapping
         if self.verbose:
             print 'table shape (%d,%d)' % self.shape
 
-    def __call__(self, codepoint, digit=-1):
-        "functor to either add dogit codepoint pairs or find codepoint digits"
-        if isinstance(codepoint, type(u"")) or isinstance(codepoint, type("")):
-            codepoint = ord(codepoint)
+    def __call__(self, glyph, digit=-1):
+        """
+        functor to either add digit codepoint pairs or find codepoint digits
+        TODO fix this to use CPT mechanism to follow DRY principle.
+        """
+        codepoint = glyph if isinstance(glyph, int) else ord(glyph)
         this = 10
         if digit == -1:
             # get mode

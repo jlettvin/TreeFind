@@ -126,7 +126,7 @@ grammar: classify16.g4 test_Codepoint.g4
 todo:
 	@$(call timestamp,$@ Integrate UniDict replacing)
 	@$(call timestamp,$@ Failing unit test in UniArray top-level block)
-	@$(call timestamp,$@ Add UniTree codepoint cutting replacing dict lookup)
+	@$(call timestamp,$@ Replace UniTree dict lookup with CPT)
 
 .PHONY:
 unittest:

@@ -18,6 +18,8 @@ __contact__    = "jlettvin@gmail.com"
 __status__     = "Demonstration"
 __date__       = "20161102"
 
+from CPT import CPT
+
 
 # CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 class UniTree(set):
@@ -44,7 +46,7 @@ class UniTree(set):
         self.wordlist = kw.get('wordlist', [])
         self.case = kw.get('ignorecase', False)
         self.end = kw.get('end', 0xFFFF)  # non-codepoint usable as end key.
-        self.tree = {}
+        self.tree = {}  # CPT()  # {}
         self(self.wordlist)
 
     def word(self, root, also=None):
