@@ -20,8 +20,9 @@ import sys
 sys.path.append('.')
 sys.path.append('..')
 
-from CPT    import (CPT )
-from Self   import (Self)
+from CPT        import (CPT      )
+from Self       import (Self     )
+from datetime   import (datetime, timedelta)
 
 
 class CPTTestCase(unittest2.TestCase):
@@ -79,3 +80,123 @@ class CPTTestCase(unittest2.TestCase):
             self.assertEqual(cpt[other], 0, Self.doc())
         for codepoint in codepoints:
             self.assertEqual(cpt[codepoint], codepoint, Self.doc())
+
+    def test_setitem_timing(self):
+        "Calculate the cost of inserts"
+        N = 10
+        I = 10000
+        operations = N * I
+
+        cpt_microseconds = 0.0
+        dct_microseconds = 0.0
+        d = {}
+
+        for _ in xrange(N):
+            t0 = datetime.now()
+            for codepoint in xrange(I):
+                self.cpt[codepoint] = codepoint
+            cpt_microseconds += (datetime.now() - t0).total_seconds()
+
+        for _ in xrange(N):
+            t0 = datetime.now()
+            for codepoint in xrange(I):
+                d[codepoint] = codepoint
+            dct_microseconds += (datetime.now() - t0).total_seconds()
+
+        with open('../artifacts/CPT.setitem.timing.txt', 'w') as target:
+            cpt_peroperation = 1e6 * cpt_microseconds / (N * I)
+            dct_peroperation = 1e6 * dct_microseconds / (N * I)
+            ratio = cpt_peroperation / dct_peroperation
+            print>>target, "\tSETITEM"
+            print>>target, "%f microseconds/cpt setitem" % (cpt_peroperation)
+            print>>target, "%f microseconds/dct setitem" % (dct_peroperation)
+            print>>target, "%f performance ratio" % (ratio)
+            print>>target, "70 ~times difference.  TODO reimplement in C"
+
+    def test_getitem_timing(self):
+        "Calculate the cost of lookups"
+        N = 10
+        I = 10000
+        operations = N * I
+
+        cpt_microseconds = 0.0
+        dct_microseconds = 0.0
+        d = {}
+
+        for _ in xrange(N):
+            t0 = datetime.now()
+            for codepoint in xrange(I):
+                self.cpt[codepoint] = codepoint
+            cpt_microseconds += (datetime.now() - t0).total_seconds()
+
+        for codepoint in xrange(I):
+            d[codepoint] = codepoint
+            self.cpt[codepoint] = codepoint
+
+        for _ in xrange(N):
+            t0 = datetime.now()
+            for codepoint in xrange(I):
+                result = self.cpt[codepoint]
+            cpt_microseconds += (datetime.now() - t0).total_seconds()
+
+        for _ in xrange(N):
+            t0 = datetime.now()
+            for codepoint in xrange(I):
+                result = d[codepoint]
+            dct_microseconds += (datetime.now() - t0).total_seconds()
+
+        with open('../artifacts/CPT.getitem.timing.txt', 'w') as target:
+            cpt_peroperation = 1e6 * cpt_microseconds / (N * I)
+            dct_peroperation = 1e6 * dct_microseconds / (N * I)
+            ratio = cpt_peroperation / dct_peroperation
+            print>>target, "\tGETITEM"
+            print>>target, "%f microseconds/cpt getitem" % (cpt_peroperation)
+            print>>target, "%f microseconds/dct getitem" % (dct_peroperation)
+            print>>target, "%f performance ratio" % (ratio)
+            print>>target, "150 ~times difference.  TODO reimplement in C"
+
+    def test_delitem_timing(self):
+        "Calculate the cost of lookups"
+        N = 10
+        I = 100
+        operations = N * I
+
+        cpt_microseconds = 0.0
+        dct_microseconds = 0.0
+        d = {}
+
+        for _ in xrange(N):
+            t0 = datetime.now()
+            for codepoint in xrange(I):
+                self.cpt[codepoint] = codepoint
+            cpt_microseconds += (datetime.now() - t0).total_seconds()
+
+        for codepoint in xrange(I):
+            d[codepoint] = codepoint
+            self.cpt[codepoint] = codepoint
+
+        for _ in xrange(N):
+            for codepoint in xrange(I):
+                self.cpt[codepoint] = codepoint
+            t0 = datetime.now()
+            for codepoint in xrange(I):
+                del self.cpt[codepoint]
+            cpt_microseconds += (datetime.now() - t0).total_seconds()
+
+        for _ in xrange(N):
+            for codepoint in xrange(I):
+                d[codepoint] = codepoint
+            t0 = datetime.now()
+            for codepoint in xrange(I):
+                del d[codepoint]
+            dct_microseconds += (datetime.now() - t0).total_seconds()
+
+        with open('../artifacts/CPT.delitem.timing.txt', 'w') as target:
+            cpt_peroperation = 1e6 * cpt_microseconds / (N * I)
+            dct_peroperation = 1e6 * dct_microseconds / (N * I)
+            ratio = cpt_peroperation / dct_peroperation
+            print>>target, "\tDELITEM"
+            print>>target, "%f microseconds/cpt getitem" % (cpt_peroperation)
+            print>>target, "%f microseconds/dct getitem" % (dct_peroperation)
+            print>>target, "%f performance ratio" % (ratio)
+            print>>target, "5000 ~times difference.  TODO reimplement in C"
