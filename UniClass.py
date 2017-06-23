@@ -136,5 +136,5 @@ Jt4TdgiKWlR/8XckU4UJCdVo7kA=
 
 if __name__ == "__main__":
 
-    for c in u"ABCabc012$=*愚公移山":
+    for c in u"ABCabc012$=*愚公移山[]{}":
         print "%s\t%06x\t%s" % (c, ord(c), UniClass.classify(c))

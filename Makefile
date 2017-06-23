@@ -127,6 +127,7 @@ todo:
 	@$(call timestamp,$@ Integrate UniDict replacing)
 	@$(call timestamp,$@ Failing unit test in UniArray top-level block)
 	@$(call timestamp,$@ Replace UniTree dict lookup with CPT)
+	@$(call timestamp,$@ Fix 005B=Lu and 007B=Ll both should be Ps)
 
 .PHONY:
 unittest:

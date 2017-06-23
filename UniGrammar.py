@@ -204,9 +204,9 @@ ID : %sID0 %sID1 *            // hand-written rule
                 runlength = B - A
                 identity = self.blockname[self.identify[A]]
                 if runlength == 1:
-                    emit += fmt[0] % (pipe, A,    identity)
+                    emit += fmt[0] % (pipe, A,      identity)
                 else:
-                    emit += fmt[1] % (pipe, A, B, identity)
+                    emit += fmt[1] % (pipe, A, B-1, identity)
                 pipe = '|'
             emit += ';\n'
 
